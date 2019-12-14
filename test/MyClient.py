@@ -359,28 +359,38 @@ class MyClient(CPhxFtdcTraderSpi):
                 r_pos=pos
 
         for yi_wu_option_pos in range(l_pos,r_pos+1):
-            try:
-                current_op_price=self.md_list[yi_wu_option_pos][-1].LastPrice
-            except:
-                current_op_price =0.49
 
             ins = self.instruments[yi_wu_option_pos]
             om = self.ins2om[ins.InstrumentID]
 
-            biggest_spread=0
-            if current_op_price<0.1:
-                biggest_spread=0.005
-            elif current_op_price>=0.1 and current_op_price<0.2:
-                biggest_spread=0.01
-            elif current_op_price>=0.2 and current_op_price<0.5:
-                biggest_spread=0.025
-            elif current_op_price>=0.5 and current_op_price<=1.0:
-                biggest_spread=0.05
-            elif current_op_price>1.0:
-                biggest_spread=0.08
+            try:
+                current_op_price=self.md_list[yi_wu_option_pos][-1].LastPrice
 
-            bid_price=current_op_price-(biggest_spread*1000//3)/1000.0
-            ask_price=current_op_price+(biggest_spread*1000//3)/1000.0
+                current_op_ask1=self.md_list[yi_wu_option_pos][-1].AskPrice1
+                current_op_bid1 = self.md_list[yi_wu_option_pos][-1].BidPrice1
+
+                biggest_spread = 0
+                if current_op_price < 0.1:
+                    biggest_spread = 0.005
+                elif current_op_price >= 0.1 and current_op_price < 0.2:
+                    biggest_spread = 0.01
+                elif current_op_price >= 0.2 and current_op_price < 0.5:
+                    biggest_spread = 0.025
+                elif current_op_price >= 0.5 and current_op_price <= 1.0:
+                    biggest_spread = 0.05
+                elif current_op_price > 1.0:
+                    biggest_spread = 0.08
+
+                if (current_op_ask1 - current_op_bid1)>biggest_spread:
+                    bid_price=((current_op_ask1+current_op_bid1-biggest_spread)* 1000//2)/1000.0
+                    ask_price = ((current_op_ask1 + current_op_bid1 + biggest_spread) * 1000 // 2) / 1000.0
+                else:
+                    bid_price = current_op_ask1-0.001
+                    ask_price = current_op_bid1+0.001
+            except:
+                current_op_price =0.49
+                bid_price = current_op_price - (0.025 * 1000 // 3) / 1000.0
+                ask_price = current_op_price + (0.025 * 1000 // 3) / 1000.0
 
             if ask_price<=0.001 or bid_price<=0.001:
                 continue
