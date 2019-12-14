@@ -110,7 +110,6 @@ class MyClient(CPhxFtdcTraderSpi):
     def OnRspQryTradingAccount(self, pTradingAccount: CPhxFtdcRspClientAccountField, ErrorID, nRequestID, bIsLast):
         if self.in_sql:
             try:
-
                 df = pd.DataFrame({time.time(): pTradingAccount.__dict__}).T
                 df.to_sql('account', self.account_engine , index=True, if_exists='append')
             except:
@@ -294,6 +293,7 @@ class MyClient(CPhxFtdcTraderSpi):
             field.LimitPrice = order.LimitPrice
         field.OrderLocalID = order.OrderLocalID
         ret = self.m_pUserApi.ReqQuickOrderInsert(field, self.next_request_id())
+        # print(order.OrderLocalID)
         # print("QuickOrderInsert ", field, ret)
 
     def send_cancel_order(self, order: OrderInfo):
@@ -320,8 +320,10 @@ class MyClient(CPhxFtdcTraderSpi):
             self.send_cancel_order(order)
 
     def get_price_list(self):
-        for op in self.instruments[:-1]:
+        for op in self.instruments[:36]:
             self.options_prices.append(op.StrikePrice)
+
+        for op in self.instruments[:-1]:
             self.options_names.append(op.InstrumentID)
 
     def close_all(self):
@@ -358,14 +360,14 @@ class MyClient(CPhxFtdcTraderSpi):
             if self.options_prices[pos]<=up_price:
                 r_pos=pos
 
-        for yi_wu_option_pos in range(l_pos,r_pos+1):
+        for yi_wu_option_pos in list(range(l_pos,r_pos+1))+list(range(l_pos+36,r_pos+1+36)):
 
             ins = self.instruments[yi_wu_option_pos]
             om = self.ins2om[ins.InstrumentID]
+            # print(ins.InstrumentID)
 
             try:
                 current_op_price=self.md_list[yi_wu_option_pos][-1].LastPrice
-
                 current_op_ask1=self.md_list[yi_wu_option_pos][-1].AskPrice1
                 current_op_bid1 = self.md_list[yi_wu_option_pos][-1].BidPrice1
 
@@ -401,14 +403,12 @@ class MyClient(CPhxFtdcTraderSpi):
 
             ask_order = om.place_limit_order(self.next_order_ref(), PHX_FTDC_D_Sell, PHX_FTDC_OF_Open, ask_price, 10)
             self.send_input_order(ask_order)
+
             self.market_ask_offer.append(ask_order)
-
             self.market_ops.append(yi_wu_option_pos)
-
             self.market_data_updated[yi_wu_option_pos] = False
-
         self.is_any_updated = False
-
+        # exit(1)
 
     def run_strategy(self):
         # FOR_EACH_INSTRUMENT
@@ -418,7 +418,6 @@ class MyClient(CPhxFtdcTraderSpi):
             if randint(0, 5) == 1:
                 self.random_cancel_order(i)
             self.market_data_updated[i] = False  # reset flag
-
         self.is_any_updated = False  # reset flag
 
 
@@ -467,7 +466,7 @@ if __name__ == '__main__':
                 # print(client.game_status)
                 # client.run_strategy()
                 client.market_maker_strategy()
-                time.sleep(10)
+                time.sleep(0.1)
                 # print("hhh")
             elif client.game_status.GameStatus == 2:
                 print("game settling")
