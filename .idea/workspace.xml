@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="83a3bde0-fde4-46dc-a2b6-362dc2927c88" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/test/MyClient.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/MyClient.py" afterDir="false" />
-    </list>
+    <list default="true" id="83a3bde0-fde4-46dc-a2b6-362dc2927c88" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -12,8 +10,7 @@
   </component>
   <component name="CoverageDataManager">
     <SUITE FILE_PATH="coverage/ubi$OrderList.coverage" NAME="OrderList Coverage Results" MODIFIED="1576246536174" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
-    <SUITE FILE_PATH="coverage/jiukun$MyClient.coverage" NAME="MyClient Coverage Results" MODIFIED="1576314006761" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
-    <SUITE FILE_PATH="coverage/ubi$MyClient.coverage" NAME="MyClient Coverage Results" MODIFIED="1576307497794" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
+    <SUITE FILE_PATH="coverage/ubi$MyClient.coverage" NAME="MyClient Coverage Results" MODIFIED="1576320900911" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
   </component>
   <component name="DatabaseView">
     <option name="SHOW_INTERMEDIATE" value="true" />
@@ -29,13 +26,16 @@
     <expand />
     <select />
   </component>
+  <component name="FavoritesManager">
+    <favorites_list name="ubi" />
+  </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/test/MyClient.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="190">
-              <caret line="468" column="30" selection-start-line="468" selection-start-column="30" selection-end-line="468" selection-end-column="30" />
+            <state relative-caret-position="-277">
+              <caret line="362" column="32" selection-start-line="362" selection-start-column="32" selection-end-line="362" selection-end-column="32" />
             </state>
           </provider>
         </entry>
@@ -43,8 +43,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/test/OrderManager.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="114">
-              <caret line="9" column="31" lean-forward="true" selection-start-line="9" selection-start-column="31" selection-end-line="9" selection-end-column="31" />
+            <state relative-caret-position="372">
+              <caret line="24" column="69" selection-start-line="24" selection-start-column="8" selection-end-line="24" selection-end-column="69" />
               <folding>
                 <element signature="e#1165#1396#0" />
                 <element signature="e#1450#1651#0" />
@@ -87,21 +87,9 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/test/OrderList.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="266">
-              <caret line="14" column="13" lean-forward="true" selection-start-line="14" selection-start-column="13" selection-end-line="14" selection-end-column="25" />
-              <folding>
-                <element signature="e#0#12#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/common/phx_structs.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="12559">
+            <state relative-caret-position="372">
               <caret line="662" selection-start-line="662" selection-end-line="662" />
             </state>
           </provider>
@@ -110,8 +98,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/common/phx_trader_api.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="76">
-              <caret line="12" column="8" selection-start-line="12" selection-start-column="8" selection-end-line="12" selection-end-column="8" />
+            <state relative-caret-position="133">
+              <caret line="15" column="13" selection-start-line="15" selection-start-column="13" selection-end-line="15" selection-end-column="13" />
             </state>
           </provider>
         </entry>
@@ -142,7 +130,6 @@
   <component name="FindInProjectRecents">
     <findStrings>
       <find>instruments</find>
-      <find>ReqQryOrder failed</find>
       <find>ins2om</find>
       <find>orderRef</find>
       <find>OrderInfo</find>
@@ -158,13 +145,9 @@
       <find>get_long_position_closeable</find>
       <find>&quot;TotalMarketMakingCompleteCount&quot;</find>
       <find>OnRspQryTradingAccount</find>
-      <find>is_any_updated</find>
-      <find>get_price_list</find>
-      <find>options_prices</find>
+      <find>ReqQryOrder failed</find>
+      <find>OnRspOrderAction</find>
     </findStrings>
-  </component>
-  <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
@@ -175,9 +158,9 @@
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="950" />
-    <option name="width" value="977" />
-    <option name="height" value="1039" />
+    <option name="x" value="949" />
+    <option name="width" value="979" />
+    <option name="height" value="1041" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
@@ -188,12 +171,17 @@
         <subPane>
           <expand>
             <path>
-              <item name="jiukun" type="b2602c69:ProjectViewProjectNode" />
-              <item name="jiukun" type="462c0819:PsiDirectoryNode" />
+              <item name="ubi" type="b2602c69:ProjectViewProjectNode" />
+              <item name="ubi" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
-              <item name="jiukun" type="b2602c69:ProjectViewProjectNode" />
-              <item name="jiukun" type="462c0819:PsiDirectoryNode" />
+              <item name="ubi" type="b2602c69:ProjectViewProjectNode" />
+              <item name="ubi" type="462c0819:PsiDirectoryNode" />
+              <item name="common" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="ubi" type="b2602c69:ProjectViewProjectNode" />
+              <item name="ubi" type="462c0819:PsiDirectoryNode" />
               <item name="test" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
@@ -292,13 +280,14 @@
       <workItem from="1576248707357" duration="4795000" />
       <workItem from="1576253948270" duration="216000" />
       <workItem from="1576254304280" duration="3458000" />
-      <workItem from="1576293291503" duration="13746000" />
-      <workItem from="1576308813473" duration="5227000" />
+      <workItem from="1576293291503" duration="13989000" />
+      <workItem from="1576308738310" duration="71000" />
+      <workItem from="1576314554537" duration="4478000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="33130000" />
+    <option name="totallyTimeSpent" value="32695000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -313,13 +302,13 @@
     <frame x="-7" y="-7" width="1563" height="845" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.25980067" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49565217" visible="true" weight="0.26312292" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info id="Favorites" order="2" side_tool="true" />
+      <window_info id="Favorites" order="2" sideWeight="0.5043478" side_tool="true" weight="0.26312292" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.35994196" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.39767778" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.3289855" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.5014493" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.3289855" />
@@ -339,29 +328,8 @@
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
   </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/test/MyClient.py</url>
-          <line>368</line>
-          <option name="timeStamp" value="8" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
-  </component>
   <component name="debuggerHistoryManager">
     <expressions id="evaluateCodeFragment">
-      <expression>
-        <expression-string>list(range(l_pos,r_pos+1))+list(range(l_pos+36,r_pos+1+36))</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>self.options_prices</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
-      </expression>
       <expression>
         <expression-string>self.md_list[index]</expression-string>
         <language-id>Python</language-id>
@@ -420,24 +388,17 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/test/OrderList.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-2489">
+          <caret line="1" column="11" selection-start-line="1" selection-start-column="11" selection-end-line="1" selection-end-column="11" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://D:/ProgramData/Anaconda3/envs/gpu/Lib/site-packages/pymysql/cursors.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="315">
           <caret line="169" selection-start-line="169" selection-end-line="169" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/common/phx_structs.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="12559">
-          <caret line="662" selection-start-line="662" selection-end-line="662" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/common/phx_trader_api.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="76">
-          <caret line="12" column="8" selection-start-line="12" selection-start-column="8" selection-end-line="12" selection-end-column="8" />
         </state>
       </provider>
     </entry>
@@ -458,20 +419,24 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test/OrderList.py">
+    <entry file="file://$PROJECT_DIR$/common/phx_trader_api.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="266">
-          <caret line="14" column="13" lean-forward="true" selection-start-line="14" selection-start-column="13" selection-end-line="14" selection-end-column="25" />
-          <folding>
-            <element signature="e#0#12#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="133">
+          <caret line="15" column="13" selection-start-line="15" selection-start-column="13" selection-end-line="15" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/common/phx_structs.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="372">
+          <caret line="662" selection-start-line="662" selection-end-line="662" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/test/OrderManager.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="114">
-          <caret line="9" column="31" lean-forward="true" selection-start-line="9" selection-start-column="31" selection-end-line="9" selection-end-column="31" />
+        <state relative-caret-position="372">
+          <caret line="24" column="69" selection-start-line="24" selection-start-column="8" selection-end-line="24" selection-end-column="69" />
           <folding>
             <element signature="e#1165#1396#0" />
             <element signature="e#1450#1651#0" />
@@ -514,8 +479,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/test/MyClient.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="190">
-          <caret line="468" column="30" selection-start-line="468" selection-start-column="30" selection-end-line="468" selection-end-column="30" />
+        <state relative-caret-position="-277">
+          <caret line="362" column="32" selection-start-line="362" selection-start-column="32" selection-end-line="362" selection-end-column="32" />
         </state>
       </provider>
     </entry>

@@ -49,7 +49,7 @@ class MyClient(CPhxFtdcTraderSpi):
         self.market_ask_offer=[]
         self.market_ops=[]
 
-        self.in_sql=True
+        self.in_sql=False
 
         self.market_engine = create_engine('mysql+pymysql://root:chj5chj5@localhost/jiukun?charset=utf8')
         self.account_engine = create_engine('mysql+pymysql://root:chj5chj5@localhost/jiukun?charset=utf8')
@@ -104,15 +104,16 @@ class MyClient(CPhxFtdcTraderSpi):
             om.on_rsp_order_insert(pInputOrder.OrderLocalID)
 
     def OnRspOrderAction(self, pInputOrderAction: CPhxFtdcOrderActionField, ErrorID):
-        if ErrorID != 0:
-            print('OnRspOrderAction, orderRef=%d, ErrorID=%d, ErrMsg=%s' % (pInputOrderAction.OrderLocalID, ErrorID, get_server_error(ErrorID)))
+        pass
+        # if ErrorID != 0:
+        #     print('OnRspOrderAction, orderRef=%d, ErrorID=%d, ErrMsg=%s' % (pInputOrderAction.OrderLocalID, ErrorID, get_server_error(ErrorID)))
 
     def OnRspQryTradingAccount(self, pTradingAccount: CPhxFtdcRspClientAccountField, ErrorID, nRequestID, bIsLast):
         if self.in_sql:
             try:
                 df = pd.DataFrame({time.time(): pTradingAccount.__dict__}).T
                 df.to_sql('account', self.account_engine , index=True, if_exists='append')
-            except:
+            except Exception as e:
                 pass
         print('OnRspQryTradingAccount, data=%s, ErrorID=%d, ErrMsg=%s, bIsLast=%d' % (json.dumps(pTradingAccount.__dict__), ErrorID, get_server_error(ErrorID), bIsLast))
 
@@ -143,7 +144,7 @@ class MyClient(CPhxFtdcTraderSpi):
                     # self.market_engine = create_engine('mysql+pymysql://root:chj5chj5@localhost/jiukun?charset=utf8')
                     df = pd.DataFrame({time.time():pMarketData.__dict__}).T
                     df.to_sql('jiukun', self.market_engine, index=True, if_exists='append')
-                except:
+                except Exception as e:
                     pass
 
             index = self.ins2index[pMarketData.InstrumentID]
@@ -233,7 +234,7 @@ class MyClient(CPhxFtdcTraderSpi):
         field = CPhxFtdcQryOrderField()
         field.InvestorID = self.m_UserID
         ret = self.m_pUserApi.ReqQryOrder(field, self.next_request_id())
-        if (not ret) or (not self.timeout_wait(10)):
+        if (not ret) or (not self.timeout_wait(50)):
             print("ReqQryOrder failed")
             return False
 
@@ -330,21 +331,36 @@ class MyClient(CPhxFtdcTraderSpi):
         for pos in range(len(self.instruments)-1):
             ins = self.instruments[pos]
             om = self.ins2om[ins.InstrumentID]
+
             long_pos_number = om.get_long_position_closeable()
-            if long_pos_number>0:
-                order = om.place_market_order(self.next_order_ref(), PHX_FTDC_D_Sell, PHX_FTDC_OF_Close, long_pos_number)
-                self.send_input_order(order)
+            while long_pos_number>0:
+                if long_pos_number>=20:
+                    order = om.place_market_order(self.next_order_ref(), PHX_FTDC_D_Sell, PHX_FTDC_OF_Close, 20)
+                    self.send_input_order(order)
+                else:
+                    order = om.place_market_order(self.next_order_ref(), PHX_FTDC_D_Sell, PHX_FTDC_OF_Close, long_pos_number)
+                    self.send_input_order(order)
+                long_pos_number-=20
+                time.sleep(0.01)
 
             short_pos_number = om.get_short_position_closeable()
-            if short_pos_number > 0:
-                order=om.place_market_order(self.next_order_ref(), PHX_FTDC_D_Buy, PHX_FTDC_OF_Close, short_pos_number)
-                self.send_input_order(order)
+            while short_pos_number > 0:
+                if short_pos_number >= 20:
+                    order=om.place_market_order(self.next_order_ref(), PHX_FTDC_D_Buy, PHX_FTDC_OF_Close, 20)
+                    self.send_input_order(order)
+                else:
+                    order = om.place_market_order(self.next_order_ref(), PHX_FTDC_D_Buy, PHX_FTDC_OF_Close,short_pos_number)
+                    self.send_input_order(order)
+                short_pos_number-=20
+                time.sleep(0.01)
 
             bids, asks = om.get_untraded_orders()
             for order in bids:
                 self.send_cancel_order(order)
+                time.sleep(0.01)
             for order in asks:
                 self.send_cancel_order(order)
+                time.sleep(0.01)
 
     def market_maker_strategy(self):
         self.close_all()
@@ -364,7 +380,6 @@ class MyClient(CPhxFtdcTraderSpi):
 
             ins = self.instruments[yi_wu_option_pos]
             om = self.ins2om[ins.InstrumentID]
-            # print(ins.InstrumentID)
 
             try:
                 current_op_price=self.md_list[yi_wu_option_pos][-1].LastPrice
@@ -383,12 +398,15 @@ class MyClient(CPhxFtdcTraderSpi):
                 elif current_op_price > 1.0:
                     biggest_spread = 0.08
 
-                if (current_op_ask1 - current_op_bid1)>biggest_spread:
-                    bid_price=((current_op_ask1+current_op_bid1-biggest_spread)* 1000//2)/1000.0
-                    ask_price = ((current_op_ask1 + current_op_bid1 + biggest_spread) * 1000 // 2) / 1000.0
-                else:
-                    bid_price = current_op_ask1-0.001
-                    ask_price = current_op_bid1+0.001
+                # if (current_op_ask1 - current_op_bid1)>biggest_spread:
+                #     bid_price=((current_op_ask1+current_op_bid1-biggest_spread)* 1000//2)/1000.0
+                #     ask_price = ((current_op_ask1 + current_op_bid1 + biggest_spread) * 1000 // 2) / 1000.0
+                # else:
+                #     ask_price = current_op_ask1-0.001
+                #     bid_price = current_op_bid1+0.001
+
+                bid_price = current_op_price - (biggest_spread * 1000 // 2) / 1000.0
+                ask_price = current_op_price + (biggest_spread * 1000 // 2) / 1000.0
             except:
                 current_op_price =0.49
                 bid_price = current_op_price - (0.025 * 1000 // 3) / 1000.0
@@ -397,15 +415,17 @@ class MyClient(CPhxFtdcTraderSpi):
             if ask_price<=0.001 or bid_price<=0.001:
                 continue
 
-            bid_order = om.place_limit_order(self.next_order_ref(), PHX_FTDC_D_Buy , PHX_FTDC_OF_Open,bid_price, 10)
+            bid_order = om.place_limit_order(self.next_order_ref(), PHX_FTDC_D_Buy , PHX_FTDC_OF_Open,bid_price, 20)
             self.send_input_order(bid_order)
             self.market_bid_offer.append(bid_order)
 
-            ask_order = om.place_limit_order(self.next_order_ref(), PHX_FTDC_D_Sell, PHX_FTDC_OF_Open, ask_price, 10)
+            ask_order = om.place_limit_order(self.next_order_ref(), PHX_FTDC_D_Sell, PHX_FTDC_OF_Open, ask_price, 20)
             self.send_input_order(ask_order)
-
             self.market_ask_offer.append(ask_order)
+
+
             self.market_ops.append(yi_wu_option_pos)
+
             self.market_data_updated[yi_wu_option_pos] = False
         self.is_any_updated = False
         # exit(1)
@@ -466,7 +486,7 @@ if __name__ == '__main__':
                 # print(client.game_status)
                 # client.run_strategy()
                 client.market_maker_strategy()
-                time.sleep(0.1)
+                time.sleep(1)
                 # print("hhh")
             elif client.game_status.GameStatus == 2:
                 print("game settling")
