@@ -49,7 +49,7 @@ class MyClient(CPhxFtdcTraderSpi):
         self.market_ask_offer=[]
         self.market_ops=[]
 
-        self.in_sql=False
+        self.in_sql=True
 
         self.market_engine = create_engine('mysql+pymysql://root:chj5chj5@localhost/jiukun?charset=utf8')
         self.account_engine = create_engine('mysql+pymysql://root:chj5chj5@localhost/jiukun?charset=utf8')
