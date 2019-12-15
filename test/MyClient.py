@@ -35,7 +35,6 @@ class MyClient(CPhxFtdcTraderSpi):
         self.query_status = False
         self.is_any_updated = False
         self.is_any_updated_lock = threading.RLock()
-
         self.game_status = None
         self.ins2om = {}
         self.ins2index = {}
@@ -367,9 +366,10 @@ class MyClient(CPhxFtdcTraderSpi):
         field.OrderLocalID = order.OrderLocalID
         try:
             ret = self.m_pUserApi.ReqOrderAction(field, self.next_request_id())
+            print("ActionOrder data=%s, ret=%d" % (json.dumps(field.__dict__), ret))
         except:
             pass
-        print("ActionOrder data=%s, ret=%d" % (json.dumps(field.__dict__), ret))
+
 
     def random_input_order(self, ins_idx):
         ins = self.instruments[ins_idx]
@@ -467,10 +467,8 @@ class MyClient(CPhxFtdcTraderSpi):
                                               PHX_FTDC_D_Sell,
                                               PHX_FTDC_OF_Close, vol_traded)
                 self.send_input_order(order)
-            try:
-                self.send_cancel_order(bid_offer)
-            except Exception as e:
-                pass
+            self.send_cancel_order(bid_offer)
+            self.market_data_updated[self.options_names.index(bid_offer.InstrumentID)] = False
 
         while len(self.market_ask_offer) != 0:
             ask_offer = self.market_ask_offer.pop()
@@ -482,6 +480,9 @@ class MyClient(CPhxFtdcTraderSpi):
                                               vol_traded)
                 self.send_input_order(order)
             self.send_cancel_order(ask_offer)
+            self.market_data_updated[self.options_names.index(ask_offer.InstrumentID)] = False
+        # with self.is_any_updated_lock:
+        self.is_any_updated = False
 
     def judge_close_or_not(self):
 
@@ -734,10 +735,10 @@ if __name__ == '__main__':
             elif client.game_status.GameStatus == 1:
                 resetted = False
                 # print(client.game_status)
-                client.start_event.set()
+                # client.start_event.set()
                 # client.run_strategy()
                 # client.best_market_maker()
-                # client.market_maker_strategy()
+                client.market_maker_strategy()
 
                 time.sleep(10)
                 # print("hhh")
