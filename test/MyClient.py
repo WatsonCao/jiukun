@@ -1,3 +1,5 @@
+import logging
+
 from common.phx_protocol import *
 from common.phx_structs import *
 from common.phx_definitions import *
@@ -32,6 +34,8 @@ class MyClient(CPhxFtdcTraderSpi):
         self.m_LoginStatus = [False, False, False, False]
         self.query_status = False
         self.is_any_updated = False
+        self.is_any_updated_lock = threading.RLock()
+
         self.game_status = None
         self.ins2om = {}
         self.ins2index = {}
@@ -39,23 +43,27 @@ class MyClient(CPhxFtdcTraderSpi):
         self.md_list = []  # array of md deque
         self.inst_num = 0
         self.market_data_updated = []
+        self.market_data_updated_lock = threading.Lock()
+
         self._background = None
         self.m_pUserApi = CPhxFtdcTraderApi()
 
-        self.options_prices=[]
+        self.options_prices = []
         self.options_names = []
 
-        self.market_bid_offer=[]
-        self.market_ask_offer=[]
-        self.market_ops=[]
+        self.market_bid_offer = []
+        self.market_ask_offer = []
+        self.market_ops = []
 
-        self.in_sql=False
+        self.in_sql = False
 
-        self.engine = create_engine('mysql+pymysql://root:chj5chj5@localhost/jiukun?charset=utf8')
+        self.start_event = threading.Event()
 
+        self.engine = create_engine(
+            'mysql+pymysql://root:chj5chj5@localhost/jiukun?charset=utf8')
 
-        self.best_bid_ask_list=deque()
-        self.best_pos_list=[]
+        self.best_bid_ask_list = deque()
+        self.best_pos_list = []
         # self.account_engine = create_engine('mysql+pymysql://root:chj5chj5@localhost/jiukun?charset=utf8')
 
     def reset(self):
@@ -64,8 +72,8 @@ class MyClient(CPhxFtdcTraderSpi):
             om.clear()
             self.md_list[self.ins2index[ins]].clear()
             self.market_data_updated[self.ins2index[ins]] = False
-
-        self.is_any_updated = False
+        with self.is_any_updated_lock:
+            self.is_any_updated = False
 
     def next_request_id(self):
         self.nRequestID += 1
@@ -83,17 +91,29 @@ class MyClient(CPhxFtdcTraderSpi):
         field = CPhxFtdcReqUserLoginField()
         field.UserID = self.m_UserID
         field.Password = self.m_Passwd
-        ret = self.m_pUserApi.ReqUserLogin(field, PHX_LINK_TYPE_Order, self.next_request_id())
-        print("ReqUserLogin Order (%s:%d) ret=%d" % (self.serverHost, self.serverOrderPort, ret))
-        ret = self.m_pUserApi.ReqUserLogin(field, PHX_LINK_TYPE_Qry, self.next_request_id())
-        print("ReqUserLogin Qry (%s:%d) ret=%d" % (self.serverHost, self.serverQryPort, ret))
-        ret = self.m_pUserApi.ReqUserLogin(field, PHX_LINK_TYPE_Rtn, self.next_request_id())
-        print("ReqUserLogin Rtn (%s:%d) ret=%d" % (self.serverHost, self.serverRtnPort, ret))
-        ret = self.m_pUserApi.ReqUserLogin(field, PHX_LINK_TYPE_MD, self.next_request_id())
-        print("ReqUserLogin MD (%s:%d) ret=%d" % (self.serverHost, self.serverMDPort, ret))
+        ret = self.m_pUserApi.ReqUserLogin(field, PHX_LINK_TYPE_Order,
+                                           self.next_request_id())
+        print("ReqUserLogin Order (%s:%d) ret=%d" % (
+            self.serverHost, self.serverOrderPort, ret))
+        ret = self.m_pUserApi.ReqUserLogin(field, PHX_LINK_TYPE_Qry,
+                                           self.next_request_id())
+        print("ReqUserLogin Qry (%s:%d) ret=%d" % (
+            self.serverHost, self.serverQryPort, ret))
+        ret = self.m_pUserApi.ReqUserLogin(field, PHX_LINK_TYPE_Rtn,
+                                           self.next_request_id())
+        print("ReqUserLogin Rtn (%s:%d) ret=%d" % (
+            self.serverHost, self.serverRtnPort, ret))
+        ret = self.m_pUserApi.ReqUserLogin(field, PHX_LINK_TYPE_MD,
+                                           self.next_request_id())
+        print("ReqUserLogin MD (%s:%d) ret=%d" % (
+            self.serverHost, self.serverMDPort, ret))
 
-    def OnRspUserLogin(self, pRspUserLogin: CPhxFtdcRspUserLoginField, LinkType, ErrorID, nRequestID):
-        print('OnRspUserLogin, data=%s, ErrorID=%d, ErrMsg=%s, nRequestID=%d' % (json.dumps(pRspUserLogin.__dict__), ErrorID, get_server_error(ErrorID), nRequestID))
+    def OnRspUserLogin(self, pRspUserLogin: CPhxFtdcRspUserLoginField, LinkType,
+                       ErrorID, nRequestID):
+        print(
+            'OnRspUserLogin, data=%s, ErrorID=%d, ErrMsg=%s, nRequestID=%d' % (
+                json.dumps(pRspUserLogin.__dict__), ErrorID,
+                get_server_error(ErrorID), nRequestID))
         if ErrorID == 0:
             self.m_LoginStatus[LinkType] = True
             if pRspUserLogin.MaxOrderLocalID > self.orderRef:
@@ -101,33 +121,44 @@ class MyClient(CPhxFtdcTraderSpi):
 
     def OnRspOrderInsert(self, pInputOrder: CPhxFtdcInputOrderField, ErrorID):
         if ErrorID != 0:
-            print('OnRspOrderInsert, orderRef=%d, ErrorID=%d, ErrMsg=%s' % (pInputOrder.OrderLocalID, ErrorID, get_server_error(ErrorID)))
+            print('OnRspOrderInsert, orderRef=%d, ErrorID=%d, ErrMsg=%s' % (
+                pInputOrder.OrderLocalID, ErrorID, get_server_error(ErrorID)))
             if pInputOrder.InstrumentID not in self.ins2om:
                 return
             om = self.ins2om[pInputOrder.InstrumentID]
             om.on_rsp_order_insert(pInputOrder.OrderLocalID)
 
-    def OnRspOrderAction(self, pInputOrderAction: CPhxFtdcOrderActionField, ErrorID):
+    def OnRspOrderAction(self, pInputOrderAction: CPhxFtdcOrderActionField,
+                         ErrorID):
         pass
         # if ErrorID != 0:
         #     print('OnRspOrderAction, orderRef=%d, ErrorID=%d, ErrMsg=%s' % (pInputOrderAction.OrderLocalID, ErrorID, get_server_error(ErrorID)))
 
-    def OnRspQryTradingAccount(self, pTradingAccount: CPhxFtdcRspClientAccountField, ErrorID, nRequestID, bIsLast):
+    def OnRspQryTradingAccount(self,
+                               pTradingAccount: CPhxFtdcRspClientAccountField,
+                               ErrorID, nRequestID, bIsLast):
         if self.in_sql:
             try:
                 df = pd.DataFrame({time.time(): pTradingAccount.__dict__}).T
-                df.to_sql('account', self.engine , index=True, if_exists='append')
+                df.to_sql('account', self.engine, index=True,
+                          if_exists='append')
             except Exception as e:
-                 print(1)
-        print('OnRspQryTradingAccount, data=%s, ErrorID=%d, ErrMsg=%s, bIsLast=%d' % (json.dumps(pTradingAccount.__dict__), ErrorID, get_server_error(ErrorID), bIsLast))
+                print(1)
+        print(
+            'OnRspQryTradingAccount, data=%s, ErrorID=%d, ErrMsg=%s, bIsLast=%d' % (
+                json.dumps(pTradingAccount.__dict__), ErrorID,
+                get_server_error(ErrorID), bIsLast))
 
-    def OnRspQryInstrument(self, pInstrument: CPhxFtdcRspInstrumentField, ErrorID, nRequestID, bIsLast):
+    def OnRspQryInstrument(self, pInstrument: CPhxFtdcRspInstrumentField,
+                           ErrorID, nRequestID, bIsLast):
         # print('OnRspQryInstrument, data=%s, ErrorID=%d, bIsLast=%d' % (json.dumps(pInstrument.__dict__), ErrorID, bIsLast))
         if pInstrument.InstrumentID not in self.ins2om:
-            self.ins2om[pInstrument.InstrumentID] = OrderManager(pInstrument.InstrumentID)
+            self.ins2om[pInstrument.InstrumentID] = OrderManager(
+                pInstrument.InstrumentID)
             self.md_list.append(deque(maxlen=10))
             self.instruments.append(copy.copy(pInstrument))
-            self.market_data_updated.append(False)
+            with self.market_data_updated_lock:
+                self.market_data_updated.append(False)
             self.ins2index[pInstrument.InstrumentID] = self.inst_num
             self.inst_num += 1
 
@@ -147,15 +178,17 @@ class MyClient(CPhxFtdcTraderSpi):
             if self.in_sql:
                 try:
                     # self.market_engine = create_engine('mysql+pymysql://root:chj5chj5@localhost/jiukun?charset=utf8')
-                    df = pd.DataFrame({time.time():pMarketData.__dict__}).T
-                    df.to_sql('jiukun', self.engine, index=True, if_exists='append')
+                    df = pd.DataFrame({time.time(): pMarketData.__dict__}).T
+                    df.to_sql('jiukun', self.engine, index=True,
+                              if_exists='append')
                 except Exception as e:
                     pass
 
             index = self.ins2index[pMarketData.InstrumentID]
             self.md_list[index].append(pMarketData)
             self.market_data_updated[index] = True
-            self.is_any_updated = True
+            with self.is_any_updated_lock:
+                self.is_any_updated = True
 
     def OnRtnOrder(self, pOrder: CPhxFtdcOrderField):
         if pOrder.InstrumentID not in self.ins2om:
@@ -170,19 +203,26 @@ class MyClient(CPhxFtdcTraderSpi):
         om = self.ins2om[pTrade.InstrumentID]
         om.on_rtn_trade(pTrade)
 
-    def OnErrRtnOrderInsert(self, pInputOrder: CPhxFtdcInputOrderField, ErrorID):
+    def OnErrRtnOrderInsert(self, pInputOrder: CPhxFtdcInputOrderField,
+                            ErrorID):
         if ErrorID != 0:
-            print('OnErrRtnOrderInsert, orderRef=%d, ErrorID=%d, ErrMsg=%s' % (pInputOrder.OrderLocalID, pInputOrder.ExchangeErrorID, get_server_error(pInputOrder.ExchangeErrorID)))
+            print('OnErrRtnOrderInsert, orderRef=%d, ErrorID=%d, ErrMsg=%s' % (
+                pInputOrder.OrderLocalID, pInputOrder.ExchangeErrorID,
+                get_server_error(pInputOrder.ExchangeErrorID)))
             if pInputOrder.InstrumentID not in self.ins2om:
                 return
             om = self.ins2om[pInputOrder.InstrumentID]
             om.on_rsp_order_insert(pInputOrder.OrderLocalID)
 
-    def OnErrRtnOrderAction(self, pOrderAction: CPhxFtdcOrderActionField, ErrorID):
+    def OnErrRtnOrderAction(self, pOrderAction: CPhxFtdcOrderActionField,
+                            ErrorID):
         if ErrorID != 0:
-            print('OnErrRtnOrderAction, orderRef=%d, ErrorID=%d, ErrMsg=%s' % (pOrderAction.OrderLocalID, pOrderAction.ExchangeErrorID, get_server_error(pOrderAction.ExchangeErrorID)))
+            print('OnErrRtnOrderAction, orderRef=%d, ErrorID=%d, ErrMsg=%s' % (
+                pOrderAction.OrderLocalID, pOrderAction.ExchangeErrorID,
+                get_server_error(pOrderAction.ExchangeErrorID)))
 
-    def OnRspQryOrder(self, pOrder: CPhxFtdcOrderField, ErrorID, nRequestID, bIsLast):
+    def OnRspQryOrder(self, pOrder: CPhxFtdcOrderField, ErrorID, nRequestID,
+                      bIsLast):
         if pOrder is not None and ErrorID == 0:
             if pOrder.InstrumentID not in self.ins2om:
                 return
@@ -194,7 +234,8 @@ class MyClient(CPhxFtdcTraderSpi):
             self.query_status = True
             print("init order query over")
 
-    def OnRspQryTrade(self, pTrade: CPhxFtdcTradeField, ErrorID, nRequestID, bIsLast):
+    def OnRspQryTrade(self, pTrade: CPhxFtdcTradeField, ErrorID, nRequestID,
+                      bIsLast):
         if pTrade is not None and ErrorID == 0:
             if pTrade.InstrumentID not in self.ins2om:
                 return
@@ -219,7 +260,8 @@ class MyClient(CPhxFtdcTraderSpi):
 
     def Init(self):
         self.m_pUserApi.RegisterSpi(self)
-        self.m_pUserApi.RegisterOrderFront(self.serverHost, self.serverOrderPort)
+        self.m_pUserApi.RegisterOrderFront(self.serverHost,
+                                           self.serverOrderPort)
         self.m_pUserApi.RegisterQryFront(self.serverHost, self.serverQryPort)
         self.m_pUserApi.RegisterRtnFront(self.serverHost, self.serverRtnPort)
         self.m_pUserApi.RegisterMDFront(self.serverHost, self.serverMDPort)
@@ -230,7 +272,8 @@ class MyClient(CPhxFtdcTraderSpi):
 
         print("OnRspUserLogin, all link ready")
         self.query_status = False
-        ret = self.m_pUserApi.ReqQryInstrument(CPhxFtdcQryInstrumentField(), self.next_request_id())
+        ret = self.m_pUserApi.ReqQryInstrument(CPhxFtdcQryInstrumentField(),
+                                               self.next_request_id())
         if (not ret) or (not self.timeout_wait(10)):
             print("ReqQryInstrument failed")
             return False
@@ -254,6 +297,21 @@ class MyClient(CPhxFtdcTraderSpi):
         self._background = threading.Thread(target=self.background_thread)
         self._background.start()
 
+        # Strategy Thread
+        def stragey_run(func, args, sleep_intervel):
+            print("-------- waitting --------")
+            self.start_event.wait()
+            print("-------- go --------")
+            while True:
+                func(*args)
+                time.sleep(sleep_intervel)
+
+        for each in [(self.run_strategy, 1), (self.market_maker_strategy, 1)]:
+            strategy_thread = threading.Thread(target=stragey_run,
+                                               args=(each[0], (), each[1]))
+            strategy_thread.setDaemon(True)
+            strategy_thread.start()
+
         if not self.timeout_wait(10):
             return False
 
@@ -269,7 +327,8 @@ class MyClient(CPhxFtdcTraderSpi):
             t = time.time()
             if t - last_time > 5 and self.m_pUserApi.all_connected:
                 last_time = t
-                ret = self.m_pUserApi.ReqQryTradingAccount(field, self.next_request_id())
+                ret = self.m_pUserApi.ReqQryTradingAccount(field,
+                                                           self.next_request_id())
                 if not ret:
                     print("ReqQryTradingAccount failed")
             time.sleep(1)
@@ -317,7 +376,9 @@ class MyClient(CPhxFtdcTraderSpi):
     def random_input_order(self, ins_idx):
         ins = self.instruments[ins_idx]
         om = self.ins2om[ins.InstrumentID]
-        order = om.place_limit_order(self.next_order_ref(), self.random_direction(), self.random_offset(), random() * 20, 1)
+        order = om.place_limit_order(self.next_order_ref(),
+                                     self.random_direction(),
+                                     self.random_offset(), random() * 20, 1)
         self.send_input_order(order)
 
     def random_cancel_order(self, ins_idx):
@@ -338,30 +399,40 @@ class MyClient(CPhxFtdcTraderSpi):
 
     def close_all(self):
         for pos in [72]:
-        # for pos in range(len(self.instruments)-1):
+            # for pos in range(len(self.instruments)-1):
             ins = self.instruments[pos]
             om = self.ins2om[ins.InstrumentID]
 
             long_pos_number = om.get_long_position_closeable()
-            while long_pos_number>0:
-                if long_pos_number>=100:
-                    order = om.place_market_order(self.next_order_ref(), PHX_FTDC_D_Sell, PHX_FTDC_OF_Close, 100)
+            while long_pos_number > 0:
+                if long_pos_number >= 100:
+                    order = om.place_market_order(self.next_order_ref(),
+                                                  PHX_FTDC_D_Sell,
+                                                  PHX_FTDC_OF_Close, 100)
                     self.send_input_order(order)
                 else:
-                    order = om.place_market_order(self.next_order_ref(), PHX_FTDC_D_Sell, PHX_FTDC_OF_Close, long_pos_number)
+                    order = om.place_market_order(self.next_order_ref(),
+                                                  PHX_FTDC_D_Sell,
+                                                  PHX_FTDC_OF_Close,
+                                                  long_pos_number)
                     self.send_input_order(order)
-                long_pos_number-=100
+                long_pos_number -= 100
                 time.sleep(0.01)
 
             short_pos_number = om.get_short_position_closeable()
             while short_pos_number > 0:
                 if short_pos_number >= 100:
-                    order=om.place_market_order(self.next_order_ref(), PHX_FTDC_D_Buy, PHX_FTDC_OF_Close, 100)
+                    order = om.place_market_order(self.next_order_ref(),
+                                                  PHX_FTDC_D_Buy,
+                                                  PHX_FTDC_OF_Close, 100)
                     self.send_input_order(order)
                 else:
-                    order = om.place_market_order(self.next_order_ref(), PHX_FTDC_D_Buy, PHX_FTDC_OF_Close,short_pos_number)
+                    order = om.place_market_order(self.next_order_ref(),
+                                                  PHX_FTDC_D_Buy,
+                                                  PHX_FTDC_OF_Close,
+                                                  short_pos_number)
                     self.send_input_order(order)
-                short_pos_number-=100
+                short_pos_number -= 100
                 time.sleep(0.01)
 
             bids, asks = om.get_untraded_orders()
@@ -373,27 +444,32 @@ class MyClient(CPhxFtdcTraderSpi):
                 time.sleep(0.01)
 
             self.market_data_updated[pos] = False
-        self.is_any_updated = False
+        with self.is_any_updated_lock:
+            self.is_any_updated = False
 
     def close_market(self):
-        while len(self.market_bid_offer)!=0:
-            bid_offer=self.market_bid_offer.pop()
-            vol_traded=bid_offer.VolumeTraded
+        while len(self.market_bid_offer) != 0:
+            bid_offer = self.market_bid_offer.pop()
+            vol_traded = bid_offer.VolumeTraded
             om = self.ins2om[bid_offer.InstrumentID]
-            if vol_traded>0:
-                order = om.place_market_order(self.next_order_ref(), PHX_FTDC_D_Sell, PHX_FTDC_OF_Close, vol_traded)
+            if vol_traded > 0:
+                order = om.place_market_order(self.next_order_ref(),
+                                              PHX_FTDC_D_Sell,
+                                              PHX_FTDC_OF_Close, vol_traded)
                 self.send_input_order(order)
             try:
                 self.send_cancel_order(bid_offer)
             except Exception as e:
                 pass
-        
-        while len(self.market_ask_offer)!=0:
-            ask_offer=self.market_ask_offer.pop()
-            vol_traded=ask_offer.VolumeTraded
+
+        while len(self.market_ask_offer) != 0:
+            ask_offer = self.market_ask_offer.pop()
+            vol_traded = ask_offer.VolumeTraded
             om = self.ins2om[ask_offer.InstrumentID]
-            if vol_traded>0:
-                order = om.place_market_order(self.next_order_ref(), PHX_FTDC_D_Buy, PHX_FTDC_OF_Close, vol_traded)
+            if vol_traded > 0:
+                order = om.place_market_order(self.next_order_ref(),
+                                              PHX_FTDC_D_Buy, PHX_FTDC_OF_Close,
+                                              vol_traded)
                 self.send_input_order(order)
             self.send_cancel_order(ask_offer)
 
@@ -402,28 +478,37 @@ class MyClient(CPhxFtdcTraderSpi):
         if len(self.best_bid_ask_list) >= 1:
             bid_offer, ask_offer = self.best_bid_ask_list.popleft()
             position_long = bid_offer.VolumeTraded - ask_offer.VolumeTraded
-            position_should_close_binary=min(bid_offer.VolumeTraded,ask_offer.VolumeTraded)
+            position_should_close_binary = min(bid_offer.VolumeTraded,
+                                               ask_offer.VolumeTraded)
             # print(bid_offer.InstrumentID,bid_offer.VolumeTraded,ask_offer.VolumeTraded)
 
-            if position_should_close_binary>0 :
+            if position_should_close_binary > 0:
                 om = self.ins2om[bid_offer.InstrumentID]
                 # order = om.place_market_order(self.next_order_ref(), PHX_FTDC_D_Sell, PHX_FTDC_OF_Close,
                 #                               position_should_close_binary)
 
-                order = om.place_limit_order(self.next_order_ref(), PHX_FTDC_D_Sell, PHX_FTDC_OF_Close, bid_price, 1)
+                order = om.place_limit_order(self.next_order_ref(),
+                                             PHX_FTDC_D_Sell, PHX_FTDC_OF_Close,
+                                             bid_price, 1)
                 self.send_input_order(order)
-                order = om.place_market_order(self.next_order_ref(), PHX_FTDC_D_Buy, PHX_FTDC_OF_Close,
+                order = om.place_market_order(self.next_order_ref(),
+                                              PHX_FTDC_D_Buy, PHX_FTDC_OF_Close,
                                               position_should_close_binary)
                 self.send_input_order(order)
 
             if position_long > 0:
-                self.best_pos_list.append((bid_offer.InstrumentID, bid_offer.LimitPrice, position_long))
+                self.best_pos_list.append((bid_offer.InstrumentID,
+                                           bid_offer.LimitPrice, position_long))
             elif position_long < 0:
-                self.best_pos_list.append((bid_offer.InstrumentID, ask_offer.LimitPrice, position_long))
+                self.best_pos_list.append((bid_offer.InstrumentID,
+                                           ask_offer.LimitPrice, position_long))
 
             self.send_cancel_order(ask_offer)
             self.send_cancel_order(bid_offer)
-            print(bid_offer.InstrumentID,bid_offer.VolumeTraded,ask_offer.VolumeTraded,"Market Maker Profit:",(bid_offer.VolumeTotalOriginal-abs(position_long))*(ask_offer.LimitPrice-bid_offer.LimitPrice)*1000)
+            print(bid_offer.InstrumentID, bid_offer.VolumeTraded,
+                  ask_offer.VolumeTraded, "Market Maker Profit:",
+                  (bid_offer.VolumeTotalOriginal - abs(position_long)) * (
+                          ask_offer.LimitPrice - bid_offer.LimitPrice) * 1000)
 
             self.market_data_updated[72] = False
 
@@ -433,23 +518,32 @@ class MyClient(CPhxFtdcTraderSpi):
             if pos_long[2] > 0:
                 index = self.ins2index[pos_long[0]]
                 last_price = self.md_list[index][-1].LastPrice
-                if last_price > pos_long[1] * 1.05 or last_price < pos_long[1] * 0.95:
+                if last_price > pos_long[1] * 1.05 or last_price < pos_long[
+                    1] * 0.95:
                     om = self.ins2om[pos_long[0]]
-                    order=om.place_market_order(self.next_order_ref(), PHX_FTDC_D_Sell, PHX_FTDC_OF_Close, pos_long[2])
+                    order = om.place_market_order(self.next_order_ref(),
+                                                  PHX_FTDC_D_Sell,
+                                                  PHX_FTDC_OF_Close,
+                                                  pos_long[2])
 
                     self.send_input_order(order)
-                    print(pos_long[0],"Close Profit:",pos_long[2]*(pos_long[2]-last_price )*1000)
+                    print(pos_long[0], "Close Profit:",
+                          pos_long[2] * (pos_long[2] - last_price) * 1000)
                     del_pos_l.append(pos)
                     self.market_data_updated[72] = False
             else:
                 index = self.ins2index[pos_long[0]]
                 last_price = self.md_list[index][-1].LastPrice
-                if last_price > pos_long[1] * 1.05 or last_price < pos_long[1] * 0.95:
+                if last_price > pos_long[1] * 1.05 or last_price < pos_long[
+                    1] * 0.95:
                     om = self.ins2om[pos_long[0]]
-                    order=om.place_market_order(self.next_order_ref(), PHX_FTDC_D_Buy, PHX_FTDC_OF_Close,
-                                          -pos_long[2])
+                    order = om.place_market_order(self.next_order_ref(),
+                                                  PHX_FTDC_D_Buy,
+                                                  PHX_FTDC_OF_Close,
+                                                  -pos_long[2])
                     self.send_input_order(order)
-                    print(pos_long[0], "Close Profit:", -pos_long[2] * (last_price - pos_long[2])*1000)
+                    print(pos_long[0], "Close Profit:",
+                          -pos_long[2] * (last_price - pos_long[2]) * 1000)
 
                     del_pos_l.append(pos)
                     self.market_data_updated[72] = False
@@ -461,16 +555,20 @@ class MyClient(CPhxFtdcTraderSpi):
             pos_long = self.best_pos_list[0]
             om = self.ins2om[pos_long[0]]
             if pos_long[2] > 0:
-                order=om.place_market_order(self.next_order_ref(), PHX_FTDC_D_Sell, PHX_FTDC_OF_Close, pos_long[2])
+                order = om.place_market_order(self.next_order_ref(),
+                                              PHX_FTDC_D_Sell,
+                                              PHX_FTDC_OF_Close, pos_long[2])
                 # print(pos_long[0], "Close Profit:", pos_long[2] * (pos_long[2] - last_price) * 1000)
             else:
-                order=om.place_market_order(self.next_order_ref(), PHX_FTDC_D_Buy, PHX_FTDC_OF_Close,
-                                      -pos_long[2])
+                order = om.place_market_order(self.next_order_ref(),
+                                              PHX_FTDC_D_Buy, PHX_FTDC_OF_Close,
+                                              -pos_long[2])
                 # print(pos_long[0], "Close Profit:", -pos_long[2] * (last_price - pos_long[2]) * 1000)
             self.send_input_order(order)
             self.market_data_updated[72] = False
             del self.best_pos_list[0]
-        self.is_any_updated = False
+        with self.is_any_updated_lock:
+            self.is_any_updated = False
 
     def best_market_maker(self):
         self.judge_close_or_not()
@@ -480,70 +578,80 @@ class MyClient(CPhxFtdcTraderSpi):
         index = self.ins2index["UBIQ"]
         ubi_price = self.md_list[index][-1].LastPrice
         om = self.ins2om["UBIQ"]
-        print(om.longSnapshot.Position,om.shortSnapshot.Position,ubi_price)
+        print(om.longSnapshot.Position, om.shortSnapshot.Position, ubi_price)
 
         for yi_wu_option_pos in [72]:
             ins = self.instruments[yi_wu_option_pos]
             om = self.ins2om[ins.InstrumentID]
             try:
-                bid_price = self.md_list[yi_wu_option_pos][-1].BidPrice1+0.001
-                ask_price = self.md_list[yi_wu_option_pos][-1].AskPrice1-0.001
+                bid_price = self.md_list[yi_wu_option_pos][-1].BidPrice1 + 0.001
+                ask_price = self.md_list[yi_wu_option_pos][-1].AskPrice1 - 0.001
 
-                if bid_price<=0.001 or ask_price<=0.001:
+                if bid_price <= 0.001 or ask_price <= 0.001:
                     continue
 
                 # o_s_p=om.shortSnapshot.Position
                 # o_l_p=om.longSnapshot.Position
 
-                if om.shortSnapshot.Position==0:
-                    bid_order = om.place_limit_order(self.next_order_ref(), PHX_FTDC_D_Buy, PHX_FTDC_OF_Open, bid_price,1)
+                if om.shortSnapshot.Position == 0:
+                    bid_order = om.place_limit_order(self.next_order_ref(),
+                                                     PHX_FTDC_D_Buy,
+                                                     PHX_FTDC_OF_Open,
+                                                     bid_price, 1)
                 else:
-                    bid_order = om.place_limit_order(self.next_order_ref(), PHX_FTDC_D_Buy, PHX_FTDC_OF_Close, bid_price,
+                    bid_order = om.place_limit_order(self.next_order_ref(),
+                                                     PHX_FTDC_D_Buy,
+                                                     PHX_FTDC_OF_Close,
+                                                     bid_price,
                                                      1)
                 self.send_input_order(bid_order)
-                if om.longSnapshot.Position==0:
-                    ask_order = om.place_limit_order(self.next_order_ref(), PHX_FTDC_D_Sell, PHX_FTDC_OF_Open, ask_price,
+                if om.longSnapshot.Position == 0:
+                    ask_order = om.place_limit_order(self.next_order_ref(),
+                                                     PHX_FTDC_D_Sell,
+                                                     PHX_FTDC_OF_Open,
+                                                     ask_price,
                                                      1)
                 else:
-                    ask_order = om.place_limit_order(self.next_order_ref(), PHX_FTDC_D_Sell, PHX_FTDC_OF_Close,
-                                                     ask_price,1)
+                    ask_order = om.place_limit_order(self.next_order_ref(),
+                                                     PHX_FTDC_D_Sell,
+                                                     PHX_FTDC_OF_Close,
+                                                     ask_price, 1)
                     self.send_input_order(ask_order)
 
-                self.best_bid_ask_list.append((bid_order,ask_order))
+                self.best_bid_ask_list.append((bid_order, ask_order))
                 self.market_data_updated[yi_wu_option_pos] = False
 
             except Exception as e:
-            #
+                #
                 # print(e)
                 pass
-        self.is_any_updated = False
-
-
+        with self.is_any_updated_lock:
+            self.is_any_updated = False
 
     def market_maker_strategy(self):
-
-
+        logging.info("market_maker_strategy")
         self.close_market()
         index = self.ins2index["UBIQ"]
-        ubi_price=self.md_list[index][-1].LastPrice
+        ubi_price = self.md_list[index][-1].LastPrice
 
-        down_price=ubi_price*0.90
-        up_price=ubi_price*1.10
-        l_pos=r_pos=-1
+        down_price = ubi_price * 0.90
+        up_price = ubi_price * 1.10
+        l_pos = r_pos = -1
         for pos in range(len(self.options_prices)):
-            if self.options_prices[pos]>=down_price and l_pos==-1:
-                l_pos=pos
-            if self.options_prices[pos]<=up_price:
-                r_pos=pos
+            if self.options_prices[pos] >= down_price and l_pos == -1:
+                l_pos = pos
+            if self.options_prices[pos] <= up_price:
+                r_pos = pos
 
-        for yi_wu_option_pos in list(range(l_pos,r_pos+1))+list(range(l_pos+36,r_pos+1+36)):
+        for yi_wu_option_pos in list(range(l_pos, r_pos + 1)) + list(
+                range(l_pos + 36, r_pos + 1 + 36)):
 
             ins = self.instruments[yi_wu_option_pos]
             om = self.ins2om[ins.InstrumentID]
 
             try:
-                current_op_price=self.md_list[yi_wu_option_pos][-1].LastPrice
-                current_op_ask1=self.md_list[yi_wu_option_pos][-1].AskPrice1
+                current_op_price = self.md_list[yi_wu_option_pos][-1].LastPrice
+                current_op_ask1 = self.md_list[yi_wu_option_pos][-1].AskPrice1
                 current_op_bid1 = self.md_list[yi_wu_option_pos][-1].BidPrice1
 
                 biggest_spread = 0
@@ -565,39 +673,48 @@ class MyClient(CPhxFtdcTraderSpi):
                 #     ask_price = current_op_ask1-0.001
                 #     bid_price = current_op_bid1+0.001
 
-                bid_price = current_op_price - (biggest_spread * 1000 // 2) / 1000.0
-                ask_price = current_op_price + (biggest_spread * 1000 // 2) / 1000.0
+                bid_price = current_op_price - (
+                        biggest_spread * 1000 // 2) / 1000.0
+                ask_price = current_op_price + (
+                        biggest_spread * 1000 // 2) / 1000.0
             except:
-                current_op_price =0.49
+                current_op_price = 0.49
                 bid_price = current_op_price - (0.025 * 1000 // 3) / 1000.0
                 ask_price = current_op_price + (0.025 * 1000 // 3) / 1000.0
 
-            if ask_price<=0.001 or bid_price<=0.001:
+            if ask_price <= 0.001 or bid_price <= 0.001:
                 continue
 
-            bid_order = om.place_limit_order(self.next_order_ref(), PHX_FTDC_D_Buy , PHX_FTDC_OF_Open,bid_price, 20)
+            bid_order = om.place_limit_order(self.next_order_ref(),
+                                             PHX_FTDC_D_Buy, PHX_FTDC_OF_Open,
+                                             bid_price, 20)
             self.send_input_order(bid_order)
             self.market_bid_offer.append(bid_order)
 
-            ask_order = om.place_limit_order(self.next_order_ref(), PHX_FTDC_D_Sell, PHX_FTDC_OF_Open, ask_price, 20)
+            ask_order = om.place_limit_order(self.next_order_ref(),
+                                             PHX_FTDC_D_Sell, PHX_FTDC_OF_Open,
+                                             ask_price, 20)
             self.send_input_order(ask_order)
             self.market_ask_offer.append(ask_order)
 
             self.market_ops.append(yi_wu_option_pos)
 
             self.market_data_updated[yi_wu_option_pos] = False
-        self.is_any_updated = False
+        with self.is_any_updated_lock:
+            self.is_any_updated = False
         # exit(1)
 
     def run_strategy(self):
         # FOR_EACH_INSTRUMENT
+        logging.info("run_stragey")
         for i in range(self.inst_num):
             if randint(0, 5) == 1:
                 self.random_input_order(i)
             if randint(0, 5) == 1:
                 self.random_cancel_order(i)
             self.market_data_updated[i] = False  # reset flag
-        self.is_any_updated = False  # reset flag
+        with self.is_any_updated_lock:
+            self.is_any_updated = False  # reset flag
 
 
 if __name__ == '__main__':
@@ -633,8 +750,10 @@ if __name__ == '__main__':
     if client.Init():
         print("init success")
         resetted = True
+
         while True:
-            if client.game_status is None or (not client.m_pUserApi.all_connected):
+            if client.game_status is None or (
+                    not client.m_pUserApi.all_connected):
                 print("server not started")
                 time.sleep(1)
             elif client.game_status.GameStatus == 0:
@@ -643,12 +762,11 @@ if __name__ == '__main__':
             elif client.game_status.GameStatus == 1:
                 resetted = False
                 # print(client.game_status)
+                client.start_event.set()
                 # client.run_strategy()
-                client.best_market_maker()
+                # client.best_market_maker()
                 # client.market_maker_strategy()
-
                 time.sleep(1)
-                # print("hhh")
             elif client.game_status.GameStatus == 2:
                 print("game settling")
                 time.sleep(1)
@@ -664,6 +782,3 @@ if __name__ == '__main__':
                 break
     else:
         print("init failed")
-
-
-
