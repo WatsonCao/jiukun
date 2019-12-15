@@ -10,8 +10,7 @@
   </component>
   <component name="CoverageDataManager">
     <SUITE FILE_PATH="coverage/ubi$OrderList.coverage" NAME="OrderList Coverage Results" MODIFIED="1576246536174" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
-    <SUITE FILE_PATH="coverage/jiukun$MyClient.coverage" NAME="MyClient Coverage Results" MODIFIED="1576321142767" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
-    <SUITE FILE_PATH="coverage/ubi$MyClient.coverage" NAME="MyClient Coverage Results" MODIFIED="1576320900911" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
+    <SUITE FILE_PATH="coverage/ubi$MyClient.coverage" NAME="MyClient Coverage Results" MODIFIED="1576378489502" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
   </component>
   <component name="DatabaseView">
     <option name="SHOW_INTERMEDIATE" value="true" />
@@ -35,8 +34,77 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/test/MyClient.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-277">
-              <caret line="362" column="32" selection-start-line="362" selection-start-column="32" selection-end-line="362" selection-end-column="32" />
+            <state relative-caret-position="209">
+              <caret line="510" selection-start-line="510" selection-end-line="510" />
+              <folding>
+                <element signature="e#1772#2033#0" />
+                <element signature="e#1866#1996#0" />
+                <element signature="e#2074#2125#0" />
+                <element signature="e#2165#2212#0" />
+                <element signature="e#2254#2330#0" />
+                <element signature="e#2368#3230#0" />
+                <element signature="e#3343#3701#0" />
+                <element signature="e#3538#3701#0" />
+                <element signature="e#3790#4144#0" />
+                <element signature="e#3819#4144#0" />
+                <element signature="e#4544#4970#0" />
+                <element signature="e#4571#4804#0" />
+                <element signature="e#4592#4743#0" />
+                <element signature="e#5085#5726#0" />
+                <element signature="e#5271#5610#0" />
+                <element signature="e#5644#5726#0" />
+                <element signature="e#5805#5914#0" />
+                <element signature="e#6203#6559#0" />
+                <element signature="e#6228#6495#0" />
+                <element signature="e#6836#6975#0" />
+                <element signature="e#7039#7247#0" />
+                <element signature="e#7339#7736#0" />
+                <element signature="e#7368#7736#0" />
+                <element signature="e#7830#8031#0" />
+                <element signature="e#8128#8473#0" />
+                <element signature="e#8180#8372#0" />
+                <element signature="e#8406#8473#0" />
+                <element signature="e#8570#8874#0" />
+                <element signature="e#8622#8773#0" />
+                <element signature="e#8807#8874#0" />
+                <element signature="e#8937#9244#0" />
+                <element signature="e#8968#9223#0" />
+                <element signature="e#9057#9110#0" />
+                <element signature="e#9173#9223#0" />
+                <element signature="e#9986#10043#0" />
+                <element signature="e#10298#10350#0" />
+                <element signature="e#10605#10657#0" />
+                <element signature="e#10924#11383#0" />
+                <element signature="e#11069#11383#0" />
+                <element signature="e#11169#11357#0" />
+                <element signature="e#11425#11530#0" />
+                <element signature="e#11569#11678#0" />
+                <element signature="e#11738#12489#0" />
+                <element signature="e#12493#12520#0" />
+                <element signature="e#12628#13004#0" />
+                <element signature="e#12929#13165#0" />
+                <element signature="e#13219#13477#0" />
+                <element signature="e#15360#16261#0" />
+                <element signature="e#15409#15859#0" />
+                <element signature="e#15513#15649#0" />
+                <element signature="e#15823#16195#0" />
+                <element signature="e#16005#16149#0" />
+                <element signature="e#16766#16822#0" />
+                <element signature="e#24783#24810#0" />
+                <element signature="e#20347#20399#0" />
+                <element signature="e#20469#20693#0" />
+                <element signature="e#20568#20663#0" />
+                <element signature="e#20763#20807#0" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$APPLICATION_HOME_DIR$/helpers/typeshed/stdlib/3/collections/__init__.pyi">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-104">
+              <caret line="191" column="8" selection-start-line="191" selection-start-column="8" selection-end-line="191" selection-end-column="8" />
             </state>
           </provider>
         </entry>
@@ -44,8 +112,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/test/OrderManager.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="372">
-              <caret line="24" column="69" selection-start-line="24" selection-start-column="8" selection-end-line="24" selection-end-column="69" />
+            <state relative-caret-position="133">
+              <caret line="10" column="32" lean-forward="true" selection-start-line="10" selection-start-column="32" selection-end-line="10" selection-end-column="32" />
               <folding>
                 <element signature="e#1165#1396#0" />
                 <element signature="e#1450#1651#0" />
@@ -67,6 +135,7 @@
                 <element signature="e#5356#5433#0" />
                 <element signature="e#5480#5557#0" />
                 <element signature="e#5598#5665#0" />
+                <element signature="e#5707#5776#0" />
                 <element signature="e#5819#5874#0" />
                 <element signature="e#5933#6112#0" />
                 <element signature="e#6172#6351#0" />
@@ -88,9 +157,21 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/test/OrderList.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="2">
+              <caret line="25" column="8" selection-start-line="25" selection-start-column="8" selection-end-line="25" selection-end-column="8" />
+              <folding>
+                <element signature="e#0#12#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/common/phx_structs.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="372">
+            <state relative-caret-position="8666">
               <caret line="662" selection-start-line="662" selection-end-line="662" />
             </state>
           </provider>
@@ -99,8 +180,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/common/phx_trader_api.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="133">
-              <caret line="15" column="13" selection-start-line="15" selection-start-column="13" selection-end-line="15" selection-end-column="13" />
+            <state relative-caret-position="116">
+              <caret line="117" selection-start-line="117" selection-end-line="117" />
             </state>
           </provider>
         </entry>
@@ -108,8 +189,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/common/phx_link.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1995">
-              <caret line="110" selection-start-line="110" selection-end-line="110" />
+            <state relative-caret-position="126">
+              <caret line="149" selection-start-line="149" selection-end-line="149" />
             </state>
           </provider>
         </entry>
@@ -147,8 +228,14 @@
       <find>&quot;TotalMarketMakingCompleteCount&quot;</find>
       <find>OnRspQryTradingAccount</find>
       <find>ReqQryOrder failed</find>
+      <find>bid</find>
       <find>OnRspOrderAction</find>
+      <find>md_list</find>
+      <find>options_names</find>
     </findStrings>
+    <replaceStrings>
+      <replace>ask</replace>
+    </replaceStrings>
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
@@ -159,15 +246,17 @@
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="948" />
-    <option name="width" value="980" />
-    <option name="height" value="1042" />
+    <option name="x" value="-9" />
+    <option name="y" value="-9" />
+    <option name="width" value="1938" />
+    <option name="height" value="1048" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -189,7 +278,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -283,12 +371,13 @@
       <workItem from="1576254304280" duration="3458000" />
       <workItem from="1576293291503" duration="13989000" />
       <workItem from="1576308738310" duration="71000" />
-      <workItem from="1576314554537" duration="4478000" />
+      <workItem from="1576314554537" duration="4692000" />
+      <workItem from="1576321296057" duration="18140000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="32695000" />
+    <option name="totallyTimeSpent" value="51049000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -301,15 +390,14 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1563" height="845" extended-state="6" />
-    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49565217" visible="true" weight="0.26312292" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49565217" visible="true" weight="0.2664452" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" sideWeight="0.5043478" side_tool="true" weight="0.26312292" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.3289855" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.5014493" />
+      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.4173913" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.37391305" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.3289855" />
@@ -329,10 +417,26 @@
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
   </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/test/MyClient.py</url>
+          <line>447</line>
+          <option name="timeStamp" value="38" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
   <component name="debuggerHistoryManager">
     <expressions id="evaluateCodeFragment">
       <expression>
-        <expression-string>self.md_list[index]</expression-string>
+        <expression-string>self.best_bid_ask_list.pop()</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>self.md_list[yi_wu_option_pos][-1].AskPrice1</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
       </expression>
@@ -342,12 +446,17 @@
         <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>self.md_list[yi_wu_option_pos][-1].LastPrice</expression-string>
+        <expression-string>self.md_list[yi_wu_option_pos]</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>self.md_list[yi_wu_option_pos]</expression-string>
+        <expression-string>self.md_list[index]</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>self.md_list[yi_wu_option_pos][-1].LastPrice</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
       </expression>
@@ -389,24 +498,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test/OrderList.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2489">
-          <caret line="1" column="11" selection-start-line="1" selection-start-column="11" selection-end-line="1" selection-end-column="11" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://D:/ProgramData/Anaconda3/envs/gpu/Lib/site-packages/pymysql/cursors.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="315">
           <caret line="169" selection-start-line="169" selection-end-line="169" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/common/phx_link.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1995">
-          <caret line="110" selection-start-line="110" selection-end-line="110" />
         </state>
       </provider>
     </entry>
@@ -420,24 +515,38 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/common/phx_trader_api.py">
+    <entry file="file://$PROJECT_DIR$/common/phx_link.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="133">
-          <caret line="15" column="13" selection-start-line="15" selection-start-column="13" selection-end-line="15" selection-end-column="13" />
+        <state relative-caret-position="126">
+          <caret line="149" selection-start-line="149" selection-end-line="149" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$APPLICATION_HOME_DIR$/helpers/typeshed/stdlib/3/collections/__init__.pyi">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-104">
+          <caret line="191" column="8" selection-start-line="191" selection-start-column="8" selection-end-line="191" selection-end-column="8" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/common/phx_structs.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="372">
+        <state relative-caret-position="8666">
           <caret line="662" selection-start-line="662" selection-end-line="662" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/common/phx_trader_api.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="116">
+          <caret line="117" selection-start-line="117" selection-end-line="117" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/test/OrderManager.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="372">
-          <caret line="24" column="69" selection-start-line="24" selection-start-column="8" selection-end-line="24" selection-end-column="69" />
+        <state relative-caret-position="133">
+          <caret line="10" column="32" lean-forward="true" selection-start-line="10" selection-start-column="32" selection-end-line="10" selection-end-column="32" />
           <folding>
             <element signature="e#1165#1396#0" />
             <element signature="e#1450#1651#0" />
@@ -459,6 +568,7 @@
             <element signature="e#5356#5433#0" />
             <element signature="e#5480#5557#0" />
             <element signature="e#5598#5665#0" />
+            <element signature="e#5707#5776#0" />
             <element signature="e#5819#5874#0" />
             <element signature="e#5933#6112#0" />
             <element signature="e#6172#6351#0" />
@@ -478,10 +588,80 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/test/OrderList.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2">
+          <caret line="25" column="8" selection-start-line="25" selection-start-column="8" selection-end-line="25" selection-end-column="8" />
+          <folding>
+            <element signature="e#0#12#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/test/MyClient.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-277">
-          <caret line="362" column="32" selection-start-line="362" selection-start-column="32" selection-end-line="362" selection-end-column="32" />
+        <state relative-caret-position="209">
+          <caret line="510" selection-start-line="510" selection-end-line="510" />
+          <folding>
+            <element signature="e#1772#2033#0" />
+            <element signature="e#1866#1996#0" />
+            <element signature="e#2074#2125#0" />
+            <element signature="e#2165#2212#0" />
+            <element signature="e#2254#2330#0" />
+            <element signature="e#2368#3230#0" />
+            <element signature="e#3343#3701#0" />
+            <element signature="e#3538#3701#0" />
+            <element signature="e#3790#4144#0" />
+            <element signature="e#3819#4144#0" />
+            <element signature="e#4544#4970#0" />
+            <element signature="e#4571#4804#0" />
+            <element signature="e#4592#4743#0" />
+            <element signature="e#5085#5726#0" />
+            <element signature="e#5271#5610#0" />
+            <element signature="e#5644#5726#0" />
+            <element signature="e#5805#5914#0" />
+            <element signature="e#6203#6559#0" />
+            <element signature="e#6228#6495#0" />
+            <element signature="e#6836#6975#0" />
+            <element signature="e#7039#7247#0" />
+            <element signature="e#7339#7736#0" />
+            <element signature="e#7368#7736#0" />
+            <element signature="e#7830#8031#0" />
+            <element signature="e#8128#8473#0" />
+            <element signature="e#8180#8372#0" />
+            <element signature="e#8406#8473#0" />
+            <element signature="e#8570#8874#0" />
+            <element signature="e#8622#8773#0" />
+            <element signature="e#8807#8874#0" />
+            <element signature="e#8937#9244#0" />
+            <element signature="e#8968#9223#0" />
+            <element signature="e#9057#9110#0" />
+            <element signature="e#9173#9223#0" />
+            <element signature="e#9986#10043#0" />
+            <element signature="e#10298#10350#0" />
+            <element signature="e#10605#10657#0" />
+            <element signature="e#10924#11383#0" />
+            <element signature="e#11069#11383#0" />
+            <element signature="e#11169#11357#0" />
+            <element signature="e#11425#11530#0" />
+            <element signature="e#11569#11678#0" />
+            <element signature="e#11738#12489#0" />
+            <element signature="e#12493#12520#0" />
+            <element signature="e#12628#13004#0" />
+            <element signature="e#12929#13165#0" />
+            <element signature="e#13219#13477#0" />
+            <element signature="e#15360#16261#0" />
+            <element signature="e#15409#15859#0" />
+            <element signature="e#15513#15649#0" />
+            <element signature="e#15823#16195#0" />
+            <element signature="e#16005#16149#0" />
+            <element signature="e#16766#16822#0" />
+            <element signature="e#24783#24810#0" />
+            <element signature="e#20347#20399#0" />
+            <element signature="e#20469#20693#0" />
+            <element signature="e#20568#20663#0" />
+            <element signature="e#20763#20807#0" />
+          </folding>
         </state>
       </provider>
     </entry>
