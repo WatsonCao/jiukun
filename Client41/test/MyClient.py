@@ -90,12 +90,12 @@ class MyClient(CPhxFtdcTraderSpi):
             om.on_rsp_order_insert(pInputOrder.OrderLocalID)
 
     def OnRspOrderAction(self, pInputOrderAction: CPhxFtdcOrderActionField, ErrorID):
-        if ErrorID != 0:
-            print('OnRspOrderAction, orderRef=%d, ErrorID=%d, ErrMsg=%s' % (pInputOrderAction.OrderLocalID, ErrorID, get_server_error(ErrorID)))
+        pass
+        # if ErrorID != 0:
+        #     print('OnRspOrderAction, orderRef=%d, ErrorID=%d, ErrMsg=%s' % (pInputOrderAction.OrderLocalID, ErrorID, get_server_error(ErrorID)))
 
     def OnRspQryTradingAccount(self, pTradingAccount: CPhxFtdcRspClientAccountField, ErrorID, nRequestID, bIsLast):
         print('OnRspQryTradingAccount, data=%s, ErrorID=%d, ErrMsg=%s, bIsLast=%d' % (json.dumps(pTradingAccount.__dict__), ErrorID, get_server_error(ErrorID), bIsLast))
-        # pass
 
     def OnRspQryInstrument(self, pInstrument: CPhxFtdcRspInstrumentField, ErrorID, nRequestID, bIsLast):
         # print('OnRspQryInstrument, data=%s, ErrorID=%d, bIsLast=%d' % (json.dumps(pInstrument.__dict__), ErrorID, bIsLast))
@@ -288,6 +288,7 @@ class MyClient(CPhxFtdcTraderSpi):
             self.send_cancel_order(order)
 
     def run_strategy(self):
+        print("Random Strategy")
         # FOR_EACH_INSTRUMENT
         for i in range(self.inst_num):
             if randint(0, 5) == 1:

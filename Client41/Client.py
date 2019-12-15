@@ -16,12 +16,11 @@ class Client41(MyClient):
     def __init__(self):
         super().__init__()
 
-        ##多进程
+        #多进程
         self.is_any_updated = False
         self.is_any_updated_lock = threading.RLock()
         self.market_data_updated = []
         self.market_data_updated_lock = threading.Lock()
-
         self.start_event = threading.Event()
 
 
@@ -34,7 +33,7 @@ class Client41(MyClient):
         self.options_names = []
 
 
-    def myInit(self):
+    def myInit(self,multi_thread=True):
         self.get_price_list()
 
         # Strategy Thread
@@ -46,11 +45,14 @@ class Client41(MyClient):
                 func(*args)
                 time.sleep(sleep_intervel)
 
-        for each in [(self.run_strategy, 1), (self.market_maker_strategy, 1)]:
-            strategy_thread = threading.Thread(target=stragey_run,
-                                               args=(each[0], (), each[1]))
-            strategy_thread.setDaemon(True)
-            strategy_thread.start()
+        if multi_thread:
+            # for each in [(self.run_strategy, 10), (self.market_maker_strategy, 3)]:
+            for each in [(self.run_strategy, 3)]:
+            # for each in [(self.market_maker_strategy, 3)]:
+                strategy_thread = threading.Thread(target=stragey_run,
+                                                   args=(each[0], (), each[1]))
+                strategy_thread.setDaemon(True)
+                strategy_thread.start()
 
         return True
 
@@ -87,13 +89,19 @@ class Client41(MyClient):
                                               PHX_FTDC_D_Buy, PHX_FTDC_OF_Close,
                                               vol_traded)
                 self.send_input_order(order)
-            self.send_cancel_order(ask_offer)
+
+            try:
+                self.send_cancel_order(ask_offer)
+            except:
+                pass
+
             self.market_data_updated[self.options_names.index(ask_offer.InstrumentID)] = False
         # with self.is_any_updated_lock:
         self.is_any_updated = False
 
     def market_maker_strategy(self):
-        # logging.info("market_maker_strategy")
+        print("Market Maker")
+        logging.info("market_maker_strategy")
         self.close_market()
         index = self.ins2index["UBIQ"]
         ubi_price = self.md_list[index][-1].LastPrice
@@ -156,8 +164,53 @@ class Client41(MyClient):
 
             self.market_data_updated[yi_wu_option_pos] = False
 
-        # with self.is_any_updated_lock:
-        self.is_any_updated = False
+        with self.is_any_updated_lock:
+            self.is_any_updated = False
+
+    ##以下固定价差部分代码
+    def fix_spread_strategy(self):
+        index = self.ins2index["UBIQ"]
+        benchmark_price = self.md_list[index][-1].LastPrice
+        spread = 0.01  # todo modify
+        bid_price = benchmark_price - spread
+        bid_volume = 1
+        ask_price = benchmark_price + spread
+        ask_volume = 1
+
+        om = self.ins2om["UBIQ"]
+        bid_order = om.place_limit_order(self.next_order_ref(), PHX_FTDC_D_Buy, PHX_FTDC_OF_Open, bid_price, bid_volume)
+        self.send_input_order(bid_order)
+        self.market_bid_offer.append(bid_order)
+
+        ask_order = om.place_limit_order(self.next_order_ref(), PHX_FTDC_D_Sell, PHX_FTDC_OF_Open, ask_price,
+                                         ask_volume)
+        self.send_input_order(ask_order)
+        self.market_ask_offer.append(ask_order)
+
+        while True:
+            time.sleep(0.1)  # todo modify
+            if bid_order.TradeVolume >= 1 or ask_order.TradeVolume >= 1:
+                first_trade_price = bid_price if bid_order.TradeVolume >= 1 else ask_price
+                benchmark_price = first_trade_price
+                bid_price = benchmark_price - spread
+                bid_volume = 2 if om.get_short_position_closeable() > 5 else 1  # self.shortSnapshot.Position
+                ask_price = benchmark_price + spread
+                ask_volume = 2 if om.get_long_position_closeable() > 5 else 1
+
+                bid_order = om.place_limit_order(self.next_order_ref(), PHX_FTDC_D_Buy, PHX_FTDC_OF_Open, bid_price,
+                                                 bid_volume)
+                self.send_input_order(bid_order)
+                self.market_bid_offer.append(bid_order)
+
+                ask_order = om.place_limit_order(self.next_order_ref(), PHX_FTDC_D_Sell, PHX_FTDC_OF_Open, ask_price,
+                                                 ask_volume)
+                self.send_input_order(ask_order)
+                self.market_ask_offer.append(ask_order)
+
+                self.market_data_updated[72] = False
+                self.is_any_updated = False
+
+                # todo close?
 
 
 if __name__ == '__main__':
@@ -202,8 +255,9 @@ if __name__ == '__main__':
                 time.sleep(1)
             elif client.game_status.GameStatus == 1:
                 resetted = False
+                # client.market_maker_strategy()##做市策略大概是因为下单太快被杀
                 client.start_event.set()
-                time.sleep(0.5)
+                time.sleep(1)
             elif client.game_status.GameStatus == 2:
                 print("game settling")
                 time.sleep(1)
