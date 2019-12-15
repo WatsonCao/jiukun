@@ -10,6 +10,7 @@
 '''
 from test.MyClient import *
 import logging
+import numpy as np
 
 
 class Client41(MyClient):
@@ -32,9 +33,16 @@ class Client41(MyClient):
         self.options_prices = []
         self.options_names = []
 
+        # parity
+        self.ubiq_price = []
+        self.option_info = []
+        self.option_order = {}
 
     def myInit(self,multi_thread=True):
         self.get_price_list()
+
+        for i in range(len(self.instruments)):
+            self.option_order[i] = []
 
         # Strategy Thread
         def stragey_run(func, args, sleep_intervel):
@@ -46,15 +54,18 @@ class Client41(MyClient):
                 time.sleep(sleep_intervel)
 
         if multi_thread:
-            # for each in [(self.run_strategy, 10), (self.market_maker_strategy, 3)]:
-            for each in [(self.run_strategy, 3)]:
             # for each in [(self.market_maker_strategy, 3)]:
+            # for each in [(self.put_call_parity, 2)]:
+            for each in [(self.put_call_parity, 2), (self.market_maker_strategy, 3)]:
                 strategy_thread = threading.Thread(target=stragey_run,
                                                    args=(each[0], (), each[1]))
                 strategy_thread.setDaemon(True)
                 strategy_thread.start()
 
         return True
+
+    # def send_input_order(self, order: OrderInfo):
+    #     super().send_input_order()
 
     ##以下为做市部分代码
     def get_price_list(self):
@@ -167,6 +178,7 @@ class Client41(MyClient):
         with self.is_any_updated_lock:
             self.is_any_updated = False
 
+
     ##以下固定价差部分代码
     def fix_spread_strategy(self):
         index = self.ins2index["UBIQ"]
@@ -212,6 +224,215 @@ class Client41(MyClient):
 
                 # todo close?
 
+    #parity
+    # @WJ parity
+    def update_option_order(self):
+        order_list = self.option_order
+        for i in range(len(self.instruments)):
+            order_i = order_list[i]
+            if len(order_i) >= 5:
+                for j in range(len(order_i) - 5):
+                    order_ins = order_i[j]
+                    # print(order_ins)
+                    if order_ins.VolumeTraded == order_ins.VolumeTotalOriginal:
+                        if order_ins.Direction == "0":
+                            if order_ins.OffsetFlag == "0":  # buy open
+                                position_should_close = order_ins.VolumeTotalOriginal
+                                om = self.ins2om[self.instruments[i].InstrumentID]
+                                order = om.place_market_order(self.next_order_ref(), PHX_FTDC_D_Sell, PHX_FTDC_OF_Close,
+                                                              position_should_close)
+                                time.sleep(0.01)
+                                self.send_input_order(order)
+
+                        if order_ins.Direction == "1":
+                            if order_ins.OffsetFlag == "0":  # sell open
+                                position_should_close = order_ins.VolumeTotalOriginal
+                                om = self.ins2om[self.instruments[i].InstrumentID]
+                                order = om.place_market_order(self.next_order_ref(), PHX_FTDC_D_Buy, PHX_FTDC_OF_Close,
+                                                              position_should_close)
+                                self.send_input_order(order)
+                                time.sleep(0.01)
+                    if order_ins.VolumeTraded != order_ins.VolumeTotalOriginal:
+                        if order_ins.Direction == "0":
+                            if order_ins.OffsetFlag == "0":  # buy open
+                                position_should_close = order_ins.VolumeTraded
+                                om = self.ins2om[self.instruments[i].InstrumentID]
+                                order = om.place_market_order(self.next_order_ref(), PHX_FTDC_D_Sell, PHX_FTDC_OF_Close,
+                                                              position_should_close)
+                                self.send_input_order(order)
+                                self.send_cancel_order(order_ins)
+                                time.sleep(0.01)
+
+                        elif order_ins.Direction == "1":
+                            if order_ins.OffsetFlag == "0":  # sell open
+                                position_should_close = order_ins.VolumeTraded
+                                om = self.ins2om[self.instruments[i].InstrumentID]
+                                order = om.place_market_order(self.next_order_ref(), PHX_FTDC_D_Buy, PHX_FTDC_OF_Close,
+                                                              position_should_close)
+                                self.send_input_order(order)
+                                time.sleep(0.01)
+                                self.send_cancel_order(order_ins)
+                                time.sleep(0.01)
+
+                        if order_ins.Direction == "0":
+                            if order_ins.OffsetFlag == "1":  # buy close
+                                position_should_close = order_ins.VolumeTotalOriginal - order_ins.VolumeTraded
+                                om = self.ins2om[self.instruments[i].InstrumentID]
+                                order = om.place_market_order(self.next_order_ref(), PHX_FTDC_D_Buy, PHX_FTDC_OF_Close,
+                                                              position_should_close)
+                                self.send_input_order(order)
+                                time.sleep(0.01)
+                                self.send_cancel_order(order_ins)
+                                time.sleep(0.01)
+
+                        if order_ins.Direction == "1":
+                            if order_ins.OffsetFlag == "1":  # sell close
+                                position_should_close = order_ins.VolumeTotalOriginal - order_ins.VolumeTraded
+                                om = self.ins2om[self.instruments[i].InstrumentID]
+                                order = om.place_market_order(self.next_order_ref(), PHX_FTDC_D_Sell, PHX_FTDC_OF_Close,
+                                                              position_should_close)
+                                self.send_input_order(order)
+                                time.sleep(0.01)
+                                self.send_cancel_order(order_ins)
+                                time.sleep(0.01)
+
+                    # print(order_ins.InstrumentID, self.instruments[i])
+                    # print(order_ins.LimitPrice,order_ins.VolumeTraded,order_ins.VolumeTotalOriginal)
+                self.option_order[i] = order_i[-5:]
+
+
+    def put_call_parity(self):
+        tau = self.game_status.CurrGameCycleLeftTime
+        tau = tau / 3600
+        r = 0
+        sigma = 0.025
+        index = self.ins2index["UBIQ"]
+        S_last = self.md_list[index][-1].LastPrice
+        S_last_last = self.md_list[index][-2].LastPrice
+        self.ubiq_price.append((S_last - S_last_last) / S_last_last)
+        if len(self.ubiq_price) > 50:
+            sigma = np.std(self.ubiq_price) * np.sqrt(7200)
+
+        K = self.options_prices
+        S_ask = self.md_list[index][-1].AskPrice1
+        S_bid = self.md_list[index][-1].BidPrice1
+
+        threshold = 0.02
+        longcall = {}
+        shortcall = {}
+        longput = {}
+        shortput = {}
+        for i in range(len(K)):
+            # print(i)
+            strike = K[i]
+            ins_call = self.instruments[i]
+            index_call = self.ins2index[ins_call.InstrumentID]
+            ins_put = self.instruments[i + 36]
+            index_put = self.ins2index[ins_put.InstrumentID]
+
+            # longcall['C' + str(strike)] = bs_call(S_bid, strike, tau, r, sigma)
+            # shortcall['C' + str(strike)] = bs_call(S_ask, strike, tau, r, sigma)
+            # longput['P' + str(strike)] = bs_put(S_ask, strike, tau, r, sigma)
+            # shortput['P' + str(strike)] = bs_put(S_bid, strike, tau, r, sigma)
+            # pcall = (longcall['C' + str(strike)] + shortcall['C' + str(strike)]) / 2
+            # pput = (longput['P' + str(strike)] + shortput['P' + str(strike)]) / 2
+
+            try:
+                ask_call = self.md_list[index_call][-1].AskPrice1
+                ask_put = self.md_list[index_put][-1].AskPrice1
+                bid_call = self.md_list[index_call][-1].BidPrice1
+                bid_put = self.md_list[index_put][-1].BidPrice1
+
+                sign_ask = ask_call - ask_put + strike - S_ask
+                sign_put = bid_call - bid_put + strike - S_bid
+                # print(pcall, pput, ask_call, ask_put)
+                # print('unparity', sign_ask, sign_put)
+                self.update_option_order()
+                if sign_ask > threshold and sign_put > threshold:
+                    om = self.ins2om[ins_put.InstrumentID]
+                    # a,b = om.get_live_orders()
+                    # print('put',[i for i in a],[i for i in b])
+                    order = om.place_limit_order(self.next_order_ref(), PHX_FTDC_D_Buy, PHX_FTDC_OF_Open,
+                                                 max(bid_put + 0.001, 0.001), 10)
+                    self.send_input_order(order)
+                    self.option_order[i + 36].append(order)
+
+                    om = self.ins2om[ins_call.InstrumentID]
+                    order = om.place_limit_order(self.next_order_ref(), PHX_FTDC_D_Sell, PHX_FTDC_OF_Open,
+                                                 max(ask_call - 0.001, 0.001), 10)
+                    self.send_input_order(order)
+                    self.option_order[i].append(order)
+
+                elif sign_ask < -threshold and sign_put < -threshold:
+                    om = self.ins2om[ins_call.InstrumentID]
+                    # a,b = om.get_live_orders()
+                    # print('call',[i for i in a],[i for i in b])
+                    order = om.place_limit_order(self.next_order_ref(), PHX_FTDC_D_Buy, PHX_FTDC_OF_Open,
+                                                 max(bid_call + 0.001, 0.001), 10)
+                    self.send_input_order(order)
+                    self.option_order[i].append(order)
+
+                    om = self.ins2om[ins_put.InstrumentID]
+                    order = om.place_limit_order(self.next_order_ref(), PHX_FTDC_D_Sell, PHX_FTDC_OF_Open,
+                                                 max(ask_put - 0.001, 0.001), 10)
+                    self.send_input_order(order)
+                    self.option_order[i + 36].append(order)
+
+                mma = len(self.option_order[0])
+                for le in range(len(self.option_order)):
+                    ma = len(self.option_order[le])
+                    if mma < ma:
+                        mma = ma
+                if mma > 10:
+                    om = self.ins2om[ins_call.InstrumentID]
+                    # a,b = om.get_live_orders()
+                    # print('parity',[i for i in a],[i for i in b])
+                    long_pos_number = om.get_long_position_closeable()
+                    short_pos_number = om.get_short_position_closeable()
+                    if long_pos_number > 0:
+                        order = om.place_market_order(self.next_order_ref(), PHX_FTDC_D_Sell, PHX_FTDC_OF_Close,
+                                                      long_pos_number)
+                        self.send_input_order(order)
+                        self.option_order[i].append(order)
+
+                    elif short_pos_number > 0:
+                        order = om.place_market_order(self.next_order_ref(), PHX_FTDC_D_Buy, PHX_FTDC_OF_Close,
+                                                      short_pos_number)
+                        self.send_input_order(order)
+                        self.option_order[i].append(order)
+
+                    om = self.ins2om[ins_put.InstrumentID]
+                    long_pos_number = om.get_long_position_closeable()
+                    short_pos_number = om.get_short_position_closeable()
+                    if long_pos_number > 0:
+                        order = om.place_market_order(self.next_order_ref(), PHX_FTDC_D_Sell, PHX_FTDC_OF_Close,
+                                                      long_pos_number)
+                        self.send_input_order(order)
+                        self.option_order[i + 36].append(order)
+
+                    elif short_pos_number > 0:
+                        order = om.place_market_order(self.next_order_ref(), PHX_FTDC_D_Buy, PHX_FTDC_OF_Close,
+                                                      short_pos_number)
+                        self.send_input_order(order)
+                        self.option_order[i + 36].append(order)
+
+                    bids, asks = om.get_untraded_orders()
+                    for order in bids:
+                        self.send_cancel_order(order)
+                        time.sleep(0.01)
+                    for order in asks:
+                        self.send_cancel_order(order)
+                        time.sleep(0.01)
+
+                self.market_data_updated[i] = False  # reset flag
+                self.market_data_updated[36 + i] = False  # reset flag
+
+                self.market_data_updated[72] = False  # reset flag
+                self.options_info.append([sigma, sign_ask, sign_put])
+                # print([sigma, sign_ask, sign_put])
+            except:
+                continue
+        self.is_any_updated = False  # reset flag
 
 if __name__ == '__main__':
     parser = OptionParser()
