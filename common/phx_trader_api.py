@@ -1,21 +1,15 @@
-import copy
-import logging
-import queue
+from common.phx_protocol import *
+from common.phx_structs import *
+from common.phx_definitions import *
+from common.phx_trader_spi import CPhxFtdcTraderSpi
 import select
 import threading
 import time
-from functools import wraps
-
-from common.phx_definitions import *
 from common.phx_link import PhxLink
-from common.phx_structs import *
-from common.phx_trader_spi import CPhxFtdcTraderSpi
+import threading
 
 
 class CPhxFtdcTraderApi(object):
-    xmh_q = queue.Queue()
-    xmh_lock = threading.Lock()
-
     def __init__(self):
         self.pSpi = None
         self.orderLink = PhxLink(PHX_LINK_TYPE_Order)
@@ -29,33 +23,6 @@ class CPhxFtdcTraderApi(object):
         self.all_connected = False
         self._lock = threading.Lock()
 
-        def send():
-            while True:
-                func, argvs, kwargs = CPhxFtdcTraderApi.xmh_q.get()
-                ret = func(*argvs, **kwargs)
-                if ret == False:
-                    logging.error("[xmh] something error %s", func.__name__)
-                else:
-                    logging.warning("[xmh] send req %s", func.__name__)
-
-        # self.sender_thread = threading.Thread(target=send)
-        # self.sender_thread.setDaemon(True)
-        # self.sender_thread.start()
-
-    def Decorator(func):
-        @wraps(func)
-        def wrapper(*args, **kwargs):
-            # --------------------------
-            with CPhxFtdcTraderApi.xmh_lock:
-                logging.warning(func.__name__)
-                ret = func(*args, **kwargs)
-            return ret
-            # --------------------------
-            # CPhxFtdcTraderApi.xmh_q.put(copy.copy((func, args, kwargs)))
-            # return True
-
-        return wrapper
-
     # 初始化
     # @remark 初始化运行环境,只有调用后,接口才开始工作
     def Init(self):
@@ -64,17 +31,13 @@ class CPhxFtdcTraderApi(object):
             return
 
         if not self.qryLink.HasFrontRegistered():
-            self.pSpi.OnFrontDisconnected(self.qryLink.linkType,
-                                          PHXERR_CONN_FRONT_UNREACHABLE)
+            self.pSpi.OnFrontDisconnected(self.qryLink.linkType, PHXERR_CONN_FRONT_UNREACHABLE)
         if not self.orderLink.HasFrontRegistered():
-            self.pSpi.OnFrontDisconnected(self.orderLink.linkType,
-                                          PHXERR_CONN_FRONT_UNREACHABLE)
+            self.pSpi.OnFrontDisconnected(self.orderLink.linkType, PHXERR_CONN_FRONT_UNREACHABLE)
         if not self.rtnLink.HasFrontRegistered():
-            self.pSpi.OnFrontDisconnected(self.rtnLink.linkType,
-                                          PHXERR_CONN_FRONT_UNREACHABLE)
+            self.pSpi.OnFrontDisconnected(self.rtnLink.linkType, PHXERR_CONN_FRONT_UNREACHABLE)
         if not self.mdLink.HasFrontRegistered():
-            self.pSpi.OnFrontDisconnected(self.mdLink.linkType,
-                                          PHXERR_CONN_FRONT_UNREACHABLE)
+            self.pSpi.OnFrontDisconnected(self.mdLink.linkType, PHXERR_CONN_FRONT_UNREACHABLE)
 
         now = time.time()
         self.connect_link(self.qryLink, now)
@@ -120,113 +83,71 @@ class CPhxFtdcTraderApi(object):
 
     # 用户登录请求
     # @param LinkType 0 Order 1 Qry 2 Rtn
-    def ReqUserLogin(self, pReqUserLoginField: CPhxFtdcReqUserLoginField,
-                     LinkType, nRequestID):
+    def ReqUserLogin(self, pReqUserLoginField: CPhxFtdcReqUserLoginField, LinkType, nRequestID):
         if LinkType == PHX_LINK_TYPE_Order:
-            return self.orderLink.send(pReqUserLoginField, nRequestID,
-                                       PHX_FTDC_TID_REQ_LOGIN)
+            return self.orderLink.send(pReqUserLoginField, nRequestID, PHX_FTDC_TID_REQ_LOGIN)
         elif LinkType == PHX_LINK_TYPE_Qry:
-            return self.qryLink.send(pReqUserLoginField, nRequestID,
-                                     PHX_FTDC_TID_REQ_LOGIN)
+            return self.qryLink.send(pReqUserLoginField, nRequestID, PHX_FTDC_TID_REQ_LOGIN)
         elif LinkType == PHX_LINK_TYPE_Rtn:
-            return self.rtnLink.send(pReqUserLoginField, nRequestID,
-                                     PHX_FTDC_TID_REQ_LOGIN)
+            return self.rtnLink.send(pReqUserLoginField, nRequestID, PHX_FTDC_TID_REQ_LOGIN)
         elif LinkType == PHX_LINK_TYPE_MD:
-            return self.mdLink.send(pReqUserLoginField, nRequestID,
-                                    PHX_FTDC_TID_REQ_LOGIN)
+            return self.mdLink.send(pReqUserLoginField, nRequestID, PHX_FTDC_TID_REQ_LOGIN)
         else:
             return False
 
     # 登出请求
     # @param LinkType 0 Order 1 Qry 2 Rtn
-    def ReqUserLogout(self, pUserLogout: CPhxFtdcReqUserLogoutField, LinkType,
-                      nRequestID):
+    def ReqUserLogout(self, pUserLogout: CPhxFtdcReqUserLogoutField, LinkType, nRequestID):
         if LinkType == PHX_LINK_TYPE_Order:
-            return self.orderLink.send(pUserLogout, nRequestID,
-                                       PHX_FTDC_TID_REQ_LOGOUT)
+            return self.orderLink.send(pUserLogout, nRequestID, PHX_FTDC_TID_REQ_LOGOUT)
         elif LinkType == PHX_LINK_TYPE_Qry:
-            return self.qryLink.send(pUserLogout, nRequestID,
-                                     PHX_FTDC_TID_REQ_LOGOUT)
+            return self.qryLink.send(pUserLogout, nRequestID, PHX_FTDC_TID_REQ_LOGOUT)
         elif LinkType == PHX_LINK_TYPE_Rtn:
-            return self.rtnLink.send(pUserLogout, nRequestID,
-                                     PHX_FTDC_TID_REQ_LOGOUT)
+            return self.rtnLink.send(pUserLogout, nRequestID, PHX_FTDC_TID_REQ_LOGOUT)
         elif LinkType == PHX_LINK_TYPE_MD:
-            return self.mdLink.send(pUserLogout, nRequestID,
-                                    PHX_FTDC_TID_REQ_LOGOUT)
+            return self.mdLink.send(pUserLogout, nRequestID, PHX_FTDC_TID_REQ_LOGOUT)
         else:
             return False
 
     # 报单录入请求
-    def ReqQuickOrderInsert(self, pInputOrder: CPhxFtdcQuickInputOrderField,
-                            nRequestID):
-        return self.orderLink.send(pInputOrder, nRequestID,
-                                   PHX_FTDC_TID_REQ_QUICK_ORDERINSERT)
+    def ReqQuickOrderInsert(self, pInputOrder: CPhxFtdcQuickInputOrderField, nRequestID):
+        return self.orderLink.send(pInputOrder, nRequestID, PHX_FTDC_TID_REQ_QUICK_ORDERINSERT)
 
     # 报单操作请求
-    @Decorator
-    def ReqOrderAction(self, pInputOrderAction: CPhxFtdcOrderActionField,
-                       nRequestID):
-        return self.orderLink.send(pInputOrderAction, nRequestID,
-                                   PHX_FTDC_TID_REQ_ORDERACTION)
+    def ReqOrderAction(self, pInputOrderAction: CPhxFtdcOrderActionField, nRequestID):
+        return self.orderLink.send(pInputOrderAction, nRequestID, PHX_FTDC_TID_REQ_ORDERACTION)
 
     # 请求查询报单
-    @Decorator
     def ReqQryOrder(self, pQryOrder: CPhxFtdcQryOrderField, nRequestID):
-        return self.qryLink.send(pQryOrder, nRequestID,
-                                 PHX_FTDC_TID_REQ_QRY_ORDER)
+        return self.qryLink.send(pQryOrder, nRequestID, PHX_FTDC_TID_REQ_QRY_ORDER)
 
     # 请求查询成交
-    @Decorator
     def ReqQryTrade(self, pQryTrade: CPhxFtdcQryTradeField, nRequestID):
-        return self.qryLink.send(pQryTrade, nRequestID,
-                                 PHX_FTDC_TID_REQ_QRY_TRADE)
+        return self.qryLink.send(pQryTrade, nRequestID, PHX_FTDC_TID_REQ_QRY_TRADE)
 
     # 请求查询投资者持仓
-    @Decorator
-    def ReqQryInvestorPosition(self,
-                               pQryInvestorPosition: CPhxFtdcQryClientPositionField,
-                               nRequestID):
-        return self.qryLink.send(pQryInvestorPosition, nRequestID,
-                                 PHX_FTDC_TID_REQ_QRY_CLIENTPOSITION)
+    def ReqQryInvestorPosition(self, pQryInvestorPosition: CPhxFtdcQryClientPositionField, nRequestID):
+        return self.qryLink.send(pQryInvestorPosition, nRequestID, PHX_FTDC_TID_REQ_QRY_CLIENTPOSITION)
 
     # 请求查询资金账户
-    @Decorator
-    def ReqQryTradingAccount(self,
-                             pQryTradingAccount: CPhxFtdcQryClientAccountField,
-                             nRequestID):
-        return self.qryLink.send(pQryTradingAccount, nRequestID,
-                                 PHX_FTDC_TID_REQ_QRY_CLIENTACCOUNT)
+    def ReqQryTradingAccount(self, pQryTradingAccount: CPhxFtdcQryClientAccountField, nRequestID):
+        return self.qryLink.send(pQryTradingAccount, nRequestID, PHX_FTDC_TID_REQ_QRY_CLIENTACCOUNT)
 
     # 请求查询合约保证金率
-    @Decorator
-    def ReqQryInstrumentMarginRate(self,
-                                   pQryInstrumentMarginRate: CPhxFtdcQryInstrumentMarginRateField,
-                                   nRequestID):
-        return self.qryLink.send(pQryInstrumentMarginRate, nRequestID,
-                                 PHX_FTDC_TID_REQ_QRY_INSTRUMENTMARGINRATE)
+    def ReqQryInstrumentMarginRate(self, pQryInstrumentMarginRate: CPhxFtdcQryInstrumentMarginRateField, nRequestID):
+        return self.qryLink.send(pQryInstrumentMarginRate, nRequestID, PHX_FTDC_TID_REQ_QRY_INSTRUMENTMARGINRATE)
 
     # 请求查询合约手续费率
-    @Decorator
-    def ReqQryInstrumentCommissionRate(self,
-                                       pQryInstrumentCommissionRate: CPhxFtdcQryInstrumentCommissionRateField,
-                                       nRequestID):
-        return self.qryLink.send(pQryInstrumentCommissionRate, nRequestID,
-                                 PHX_FTDC_TID_REQ_QRY_INSTRUMENTCOMMISSIONRATE)
+    def ReqQryInstrumentCommissionRate(self, pQryInstrumentCommissionRate: CPhxFtdcQryInstrumentCommissionRateField, nRequestID):
+        return self.qryLink.send(pQryInstrumentCommissionRate, nRequestID, PHX_FTDC_TID_REQ_QRY_INSTRUMENTCOMMISSIONRATE)
 
     # 请求查询合约
-    @Decorator
-    def ReqQryInstrument(self, pQryInstrument: CPhxFtdcQryInstrumentField,
-                         nRequestID):
-        return self.qryLink.send(pQryInstrument, nRequestID,
-                                 PHX_FTDC_TID_REQ_QRY_INSTRUMENT)
+    def ReqQryInstrument(self, pQryInstrument: CPhxFtdcQryInstrumentField, nRequestID):
+        return self.qryLink.send(pQryInstrument, nRequestID, PHX_FTDC_TID_REQ_QRY_INSTRUMENT)
 
     # 请求查询合约状态
-    @Decorator
-    def ReqQryInstrumentStatus(self,
-                               pQryInstrumentStatus: CPhxFtdcQryInstrumentStatusField,
-                               nRequestID):
-        return self.qryLink.send(pQryInstrumentStatus, nRequestID,
-                                 PHX_FTDC_TID_REQ_QRY_INSTRUMENTSTATUS)
+    def ReqQryInstrumentStatus(self, pQryInstrumentStatus: CPhxFtdcQryInstrumentStatusField, nRequestID):
+        return self.qryLink.send(pQryInstrumentStatus, nRequestID, PHX_FTDC_TID_REQ_QRY_INSTRUMENTSTATUS)
 
     def fetch_link(self, sock):
         if sock == self.qryLink.socket_:
@@ -270,8 +191,7 @@ class CPhxFtdcTraderApi(object):
         if not link.connected and now - link.last_reconnect_time > 5:
             link.last_reconnect_time = now
             if not link.connect():
-                self.pSpi.OnFrontDisconnected(link.linkType,
-                                              PHXERR_CONN_FRONT_UNREACHABLE)
+                self.pSpi.OnFrontDisconnected(link.linkType, PHXERR_CONN_FRONT_UNREACHABLE)
             else:
                 self.good_links[link.linkType] = link.socket_
                 print('connect (%s:%d) success' % (link.host, link.port))
@@ -286,14 +206,10 @@ class CPhxFtdcTraderApi(object):
                 self.qryLink.disconnect()
                 self.rtnLink.disconnect()
                 self.mdLink.disconnect()
-                self.pSpi.OnFrontDisconnected(PHX_LINK_TYPE_Order,
-                                              PHXERR_CONN_FRONT_UNREACHABLE)
-                self.pSpi.OnFrontDisconnected(PHX_LINK_TYPE_Qry,
-                                              PHXERR_CONN_FRONT_UNREACHABLE)
-                self.pSpi.OnFrontDisconnected(PHX_LINK_TYPE_Rtn,
-                                              PHXERR_CONN_FRONT_UNREACHABLE)
-                self.pSpi.OnFrontDisconnected(PHX_LINK_TYPE_MD,
-                                              PHXERR_CONN_FRONT_UNREACHABLE)
+                self.pSpi.OnFrontDisconnected(PHX_LINK_TYPE_Order, PHXERR_CONN_FRONT_UNREACHABLE)
+                self.pSpi.OnFrontDisconnected(PHX_LINK_TYPE_Qry, PHXERR_CONN_FRONT_UNREACHABLE)
+                self.pSpi.OnFrontDisconnected(PHX_LINK_TYPE_Rtn, PHXERR_CONN_FRONT_UNREACHABLE)
+                self.pSpi.OnFrontDisconnected(PHX_LINK_TYPE_MD, PHXERR_CONN_FRONT_UNREACHABLE)
                 self.good_links = {}
 
     def try_reconnect(self):
@@ -318,3 +234,6 @@ class CPhxFtdcTraderApi(object):
         if not self._is_started:
             raise NotImplementedError
         self._is_started = False
+
+
+

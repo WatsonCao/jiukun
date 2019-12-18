@@ -19,9 +19,9 @@ class Client41(MyClient):
 
         #多进程
         self.is_any_updated = False
-        self.is_any_updated_lock = threading.RLock()
+        # self.is_any_updated_lock = threading.RLock()
         self.market_data_updated = []
-        self.market_data_updated_lock = threading.Lock()
+        # self.market_data_updated_lock = threading.Lock()
         self.start_event = threading.Event()
 
 
@@ -53,21 +53,18 @@ class Client41(MyClient):
                 func(*args)
                 time.sleep(sleep_intervel)
 
-        if multi_thread:
-            # for each in [(self.market_maker_strategy, 3)]:
-            # for each in [(self.put_call_parity, 2)]:
-            for each in [(self.put_call_parity, 2), (self.market_maker_strategy, 3)]:
-                strategy_thread = threading.Thread(target=stragey_run,
-                                                   args=(each[0], (), each[1]))
-                strategy_thread.setDaemon(True)
-                strategy_thread.start()
+        # if multi_thread:
+        #     for each in [(self.market_maker_strategy, 2)]:
+        #     # for each in [(self.put_call_parity, 2)]:
+        #     # for each in [(self.put_call_parity, 2), (self.market_maker_strategy, 3)]:
+        #         strategy_thread = threading.Thread(target=stragey_run,
+        #                                            args=(each[0], (), each[1]))
+        #         strategy_thread.setDaemon(True)
+        #         strategy_thread.start()
 
         return True
 
-    # def send_input_order(self, order: OrderInfo):
-    #     super().send_input_order()
-
-    ##以下为做市部分代码
+    ##以下为做市部分
     def get_price_list(self):
         for op in self.instruments[:36]:
             self.options_prices.append(op.StrikePrice)
@@ -112,7 +109,7 @@ class Client41(MyClient):
 
     def market_maker_strategy(self):
         print("Market Maker")
-        logging.info("market_maker_strategy")
+        # logging.info("market_maker_strategy")
         self.close_market()
         index = self.ins2index["UBIQ"]
         ubi_price = self.md_list[index][-1].LastPrice
@@ -161,13 +158,13 @@ class Client41(MyClient):
 
             bid_order = om.place_limit_order(self.next_order_ref(),
                                              PHX_FTDC_D_Buy, PHX_FTDC_OF_Open,
-                                             bid_price, 20)
+                                             bid_price, 30)
             self.send_input_order(bid_order)
             self.market_bid_offer.append(bid_order)
 
             ask_order = om.place_limit_order(self.next_order_ref(),
                                              PHX_FTDC_D_Sell, PHX_FTDC_OF_Open,
-                                             ask_price, 20)
+                                             ask_price, 30)
             self.send_input_order(ask_order)
             self.market_ask_offer.append(ask_order)
 
@@ -175,7 +172,7 @@ class Client41(MyClient):
 
             self.market_data_updated[yi_wu_option_pos] = False
 
-        with self.is_any_updated_lock:
+        # with self.is_any_updated_lock:
             self.is_any_updated = False
 
 
@@ -464,7 +461,7 @@ if __name__ == '__main__':
     client.m_UserID = user_id
     client.m_Passwd = password
 
-    if client.Init() and client.myInit():
+    if client.Init() and client.myInit(False):
         print("init success")
         resetted = True
         while True:
@@ -476,9 +473,10 @@ if __name__ == '__main__':
                 time.sleep(1)
             elif client.game_status.GameStatus == 1:
                 resetted = False
-                # client.market_maker_strategy()##做市策略大概是因为下单太快被杀
-                client.start_event.set()
-                time.sleep(1)
+                client.market_maker_strategy()##做市策略大概是因为下单太快被杀
+                time.sleep(3)
+                # client.put_call_parity()
+                # time.sleep(1)
             elif client.game_status.GameStatus == 2:
                 print("game settling")
                 time.sleep(1)
