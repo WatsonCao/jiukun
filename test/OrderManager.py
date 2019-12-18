@@ -16,6 +16,7 @@ class OrderManager(object):
         self.OrderRef2OrderInfo = {}
         self.snapshot = self.longSnapshot  # point to longSnapshot/shortSnapshot based on direction/offset
         self.order_list = self.bid_list  # point to bid_list/ask_list based on direction
+        self.trade_id_set = {}
 
     def place_limit_order(self, orderRef, direction, offset, price, volume):
         orderInfo = OrderInfo(orderRef=orderRef, priceType=PHX_FTDC_OPT_LimitPrice, direction=direction,
@@ -66,6 +67,24 @@ class OrderManager(object):
         if order.OrderLocalID not in self.OrderRef2OrderInfo:
             return
         orderInfo = self.OrderRef2OrderInfo[order.OrderLocalID]
+        '''
+        0. Already in final status, do nothing
+        1. If new status is a final status, must do something
+        2. If new status is not a final status:
+            2.1 If new status is older than the current status, do nothing
+                (Unknown='6' NoTradeQueueing='3' PartTradedQueueing='1')
+            2.2 If status remains unchanged and traded volume does not increase, do nothing
+        '''
+        if OrderManager.is_final_status(orderInfo.OrderStatus):
+            print("Already in " + orderInfo.OrderStatus + " status")
+            return
+        if not OrderManager.is_final_status(order.OrderStatus):
+            if order.OrderStatus > orderInfo.OrderStatus:
+                print("Old status " + orderInfo.OrderStatus + " New status " + order.OrderStatus)
+                return
+            if order.OrderStatus == orderInfo.OrderStatus and order.VolumeTraded <= orderInfo.VolumeTraded:
+                print("Status " + order.OrderStatus + " Old volume %d New volume %d" %(orderInfo.VolumeTraded, order.VolumeTraded))
+                return
 
         if orderInfo.OrderSysID is None:
             orderInfo.OrderSysID = order.OrderSysID
@@ -99,6 +118,11 @@ class OrderManager(object):
         # print('OnRtnOrder, data=%s' % json.dumps(order.__dict__))
 
     def on_rtn_trade(self, trade: CPhxFtdcTradeField):
+        if trade.TradeID in self.trade_id_set:
+            print('dupe trade')
+            return
+        self.trade_id_set[trade.TradeID] = 1
+
         if trade.OrderLocalID not in self.OrderRef2OrderInfo:
             return
 
@@ -197,6 +221,7 @@ class OrderManager(object):
         self.longOpenPosition = 0
         self.shortOpenPosition = 0
         self.OrderRef2OrderInfo = {}
+        self.trade_id_set = {}
 
     def _get_orders_by(self, order_status):
         bids = self.bid_list.get_order_by_status(order_status)
@@ -261,4 +286,5 @@ class OrderManager(object):
             self.place_market_order(order.OrderLocalID, order.Direction, offset, order.VolumeTotalOriginal)
         else:
             self.place_limit_order(order.OrderLocalID, order.Direction, offset, order.LimitPrice, order.VolumeTotalOriginal)
+
 

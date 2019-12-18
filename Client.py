@@ -109,7 +109,7 @@ class Client41(MyClient):
 
     def market_maker_strategy(self):
         print("Market Maker")
-        # logging.info("market_maker_strategy")
+        logging.info("market_maker_strategy")
         self.close_market()
         index = self.ins2index["UBIQ"]
         ubi_price = self.md_list[index][-1].LastPrice
@@ -438,8 +438,12 @@ if __name__ == '__main__':
     parser.add_option("-u", "--user_id", dest="user_id", help="user id")
     parser.add_option("-a", "--password", dest="password", help="password")
     (options, args) = parser.parse_args()
-    server_ip = '106.120.131.90'
+    # server_ip = '106.120.131.90'
+
+    server_ip = '127.0.0.1'
     order_port = 9000
+
+
     user_id = 41
     password = '8V2pmCbX'
 
@@ -474,7 +478,7 @@ if __name__ == '__main__':
             elif client.game_status.GameStatus == 1:
                 resetted = False
                 client.market_maker_strategy()##做市策略大概是因为下单太快被杀
-                time.sleep(3)
+                time.sleep(1)
                 # client.put_call_parity()
                 # time.sleep(1)
             elif client.game_status.GameStatus == 2:
