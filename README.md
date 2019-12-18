@@ -1,1 +1,1 @@
-# jiukun
+- Position and account information will be stored in log.txt, use "flush.bat" in Windows, use "tail -f  log.txt" in Linux.
