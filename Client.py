@@ -11,8 +11,6 @@
 from test.MyClient import *
 import logging
 import numpy as np
-import sys
-import os
 
 
 class Client41(MyClient):
