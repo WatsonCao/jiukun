@@ -17,6 +17,9 @@ class Client41(MyClient):
     def __init__(self):
         super().__init__()
 
+        #获得初始的价格信息
+        self.ini_mkdata = deque()
+
         #多进程
         self.is_any_updated_lock = threading.RLock()
         self.market_data_updated_lock = threading.RLock()
@@ -62,7 +65,7 @@ class Client41(MyClient):
                 time.sleep(sleep_intervel)
 
         if multi_thread:
-            for each in [(self.market_maker_strategy, 2),(self.visual_position,2)]:
+            for each in [(self.market_maker_strategy, 1),(self.visual_position,1)]:
             # for each in [(self.put_call_parity, 2)]:
             # for each in [(self.put_call_parity, 2), (self.market_maker_strategy, 3)]:
                 strategy_thread = threading.Thread(target=stragey_run,
@@ -77,17 +80,17 @@ class Client41(MyClient):
         with self.is_any_updated_lock:
             print("Visual Position")
             self.market_data_updated_lock.acquire()
-            str1="\nCall\tLong\tShort\tPut\tLong\tShort\t\n"
+            str1="\nCall\tLong\tShort\tPrice\tPut\tLong\tShort\tPrice\t\n"
             try:
                 for pos in range(0,36):
                     om = self.ins2om[self.options_names[pos]]
-                    str1+=self.options_names[pos]+"\t"+str(om.longSnapshot.Position)+"\t"+str(om.shortSnapshot.Position)+"\t"
+                    str1+=self.options_names[pos]+"\t"+str(om.longSnapshot.Position)+"\t"+str(om.shortSnapshot.Position)+"\t"+"{:.4f}".format(self.md_list[pos][-1].LastPrice)+"\t"
                     om = self.ins2om[self.options_names[pos+36]]
                     str1 += self.options_names[pos+36] + "\t" + str(om.longSnapshot.Position) + "\t" + str(
-                        om.shortSnapshot.Position) + "\n"
+                        om.shortSnapshot.Position) +"\t"+"{:.4f}".format(self.md_list[pos+36][-1].LastPrice)+ "\n"
                 om = self.ins2om[self.options_names[72]]
                 str1 += self.options_names[72] + "\t" + str(om.longSnapshot.Position) + "\t" + str(
-                    om.shortSnapshot.Position) + "\n"
+                    om.shortSnapshot.Position) +"\t"+"{:.4f}".format(self.md_list[72][-1].LastPrice)+ "\n"
             except Exception as e:
                 print(e)
 
@@ -105,6 +108,26 @@ class Client41(MyClient):
         tmp=pTradingAccount.__dict__
         print('OnRspQryTradingAccount, data=%s, ErrorID=%d, ErrMsg=%s, bIsLast=%d' % (json.dumps(tmp), ErrorID, get_server_error(ErrorID), bIsLast))
         self.market_log=tmp
+
+    def OnRtnMarketData(self, pMarketData: CPhxFtdcDepthMarketDataField):
+
+        if len(self.ins2index)>=73:
+            while len(self.ini_mkdata)>0:
+                tmp_pk=self.ini_mkdata.pop()
+                index = self.ins2index[tmp_pk.InstrumentID]
+                self.md_list[index].append(tmp_pk)
+                self.market_data_updated[index] = True
+                self.is_any_updated = True
+
+            if pMarketData.InstrumentID in self.ins2index:
+                # print('OnRtnMarketData, data=%s' % json.dumps(pMarketData.__dict__))
+                index = self.ins2index[pMarketData.InstrumentID]
+                self.md_list[index].append(pMarketData)
+                self.market_data_updated[index] = True
+                self.is_any_updated = True
+        else:
+            self.ini_mkdata.append(pMarketData)
+
 
     ##以下为做市部分
     def get_price_list(self):
@@ -151,7 +174,6 @@ class Client41(MyClient):
 
     def market_maker_strategy(self):
         print("Market Maker")
-        # logging.info("market_maker_strategy")
         self.close_market()
         index = self.ins2index["UBIQ"]
         ubi_price = self.md_list[index][-1].LastPrice

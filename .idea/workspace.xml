@@ -4,7 +4,7 @@
     <list default="true" id="2a32ffea-8069-4402-a6cb-c3ad39249044" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client.py" beforeDir="false" afterPath="$PROJECT_DIR$/Client.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/log.txt" beforeDir="false" afterPath="$PROJECT_DIR$/log.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/MyClient.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/MyClient.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -13,7 +13,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="CoverageDataManager">
-    <SUITE FILE_PATH="coverage/jiukun$Client.coverage" NAME="Client Coverage Results" MODIFIED="1576656531069" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/jiukun$Client.coverage" NAME="Client Coverage Results" MODIFIED="1576660352560" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/jiukun$MyClient.coverage" NAME="MyClient Coverage Results" MODIFIED="1576635883670" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
   </component>
   <component name="FileEditorManager">
@@ -21,20 +21,34 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Client.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="76">
-              <caret line="52" column="19" selection-start-line="52" selection-start-column="19" selection-end-line="52" selection-end-column="19" />
+            <state relative-caret-position="304">
+              <caret line="93" column="34" lean-forward="true" selection-start-line="93" selection-start-column="34" selection-end-line="93" selection-end-column="34" />
               <folding>
                 <element signature="e#162#189#0" expanded="true" />
+                <element signature="e#890#1802#0" />
+                <element signature="e#6349#6361#0" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/test/MyClient.py">
+        <entry file="file://$PROJECT_DIR$/common/phx_structs.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="388">
-              <caret line="100" lean-forward="true" selection-start-line="98" selection-start-column="4" selection-end-line="100" />
+            <state relative-caret-position="182">
+              <caret line="821" column="8" selection-start-line="821" selection-start-column="8" selection-end-line="821" selection-end-column="8" />
+              <folding>
+                <element signature="e#0#13#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/common/phx_trader_api.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="136">
+              <caret line="145" column="30" lean-forward="true" selection-start-line="145" selection-start-column="30" selection-end-line="145" selection-end-column="30" />
               <folding>
                 <element signature="e#0#33#0" expanded="true" />
               </folding>
@@ -52,41 +66,10 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/common/phx_trader_api.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1923">
-              <caret line="14" column="53" lean-forward="true" selection-start-line="14" selection-start-column="53" selection-end-line="14" selection-end-column="53" />
-              <folding>
-                <element signature="e#0#33#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/common/phx_structs.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-6722">
-              <caret line="978" column="6" selection-start-line="978" selection-start-column="6" selection-end-line="978" selection-end-column="6" />
-              <folding>
-                <element signature="e#0#13#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/common/phx_protocol.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-2173" />
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/common/phx_link.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1163">
-              <caret line="111" column="62" selection-start-line="111" selection-start-column="53" selection-end-line="111" selection-end-column="62" />
+            <state relative-caret-position="-120">
+              <caret line="141" column="8" selection-start-line="141" selection-start-column="8" selection-end-line="141" selection-end-column="8" />
               <folding>
                 <element signature="e#0#33#0" expanded="true" />
               </folding>
@@ -104,10 +87,21 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/test/OrderManager.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-680">
+            <state relative-caret-position="-3883">
               <caret line="65" column="8" selection-start-line="65" selection-start-column="8" selection-end-line="65" selection-end-column="8" />
               <folding>
                 <element signature="e#0#33#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/test/OrderList.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-912">
+              <folding>
+                <element signature="e#0#12#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -123,6 +117,8 @@
       <find>OnRspOrderAction</find>
       <find>market_data_updated</find>
       <find>ins2om</find>
+      <find>price</find>
+      <find>Price</find>
       <find>OnRspQryTradingAccount</find>
     </findStrings>
   </component>
@@ -132,14 +128,14 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/test/MyClient.py" />
         <option value="$PROJECT_DIR$/README.md" />
+        <option value="$PROJECT_DIR$/test/MyClient.py" />
         <option value="$PROJECT_DIR$/Client.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="952" />
+    <option name="x" value="-8" />
     <option name="width" value="976" />
     <option name="height" value="1038" />
   </component>
@@ -258,12 +254,12 @@
       <option name="presentableId" value="Default" />
       <updated>1576633317505</updated>
       <workItem from="1576633323787" duration="1446000" />
-      <workItem from="1576635790915" duration="18461000" />
+      <workItem from="1576635790915" duration="21979000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="19907000" />
+    <option name="totallyTimeSpent" value="23425000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1563" height="845" extended-state="6" />
@@ -274,8 +270,8 @@
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.37300435" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.37300435" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.34107402" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.4107402" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
@@ -354,63 +350,9 @@ print(om.longSnapshot.Position, om.shortSnapshot.Position, last_price)</expressi
     </expressions>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/test/OrderList.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-27">
-          <folding>
-            <element signature="e#0#12#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/common/phx_definitions.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-3560" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/common/phx_protocol.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-2173" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/common/phx_structs.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-6722">
-          <caret line="978" column="6" selection-start-line="978" selection-start-column="6" selection-end-line="978" selection-end-column="6" />
-          <folding>
-            <element signature="e#0#13#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test/OrderManager.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-680">
-          <caret line="65" column="8" selection-start-line="65" selection-start-column="8" selection-end-line="65" selection-end-column="8" />
-          <folding>
-            <element signature="e#0#33#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/common/phx_trader_api.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1923">
-          <caret line="14" column="53" lean-forward="true" selection-start-line="14" selection-start-column="53" selection-end-line="14" selection-end-column="53" />
-          <folding>
-            <element signature="e#0#33#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/common/phx_link.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1163">
-          <caret line="111" column="62" selection-start-line="111" selection-start-column="53" selection-end-line="111" selection-end-column="62" />
-          <folding>
-            <element signature="e#0#33#0" expanded="true" />
-          </folding>
-        </state>
       </provider>
     </entry>
     <entry file="file://$USER_HOME$/AppData/Local/Temp/360zip$Temp/360$0/MyClient.py">
@@ -445,23 +387,6 @@ print(om.longSnapshot.Position, om.shortSnapshot.Position, last_price)</expressi
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/common/phx_trader_spi.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="57">
-          <caret line="4" column="6" selection-start-line="4" selection-start-column="6" selection-end-line="4" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test/MyClient.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="388">
-          <caret line="100" lean-forward="true" selection-start-line="98" selection-start-column="4" selection-end-line="100" />
-          <folding>
-            <element signature="e#0#33#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SPLIT">
@@ -472,12 +397,145 @@ print(om.longSnapshot.Position, om.shortSnapshot.Position, last_price)</expressi
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/test/OrderList.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-912">
+          <folding>
+            <element signature="e#0#12#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/OrderManager.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-3883">
+          <caret line="65" column="8" selection-start-line="65" selection-start-column="8" selection-end-line="65" selection-end-column="8" />
+          <folding>
+            <element signature="e#0#33#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/common/phx_definitions.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-3560" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/common/phx_structs.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="182">
+          <caret line="821" column="8" selection-start-line="821" selection-start-column="8" selection-end-line="821" selection-end-column="8" />
+          <folding>
+            <element signature="e#0#13#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/common/phx_trader_api.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="145" column="30" lean-forward="true" selection-start-line="145" selection-start-column="30" selection-end-line="145" selection-end-column="30" />
+          <folding>
+            <element signature="e#0#33#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/common/phx_link.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-120">
+          <caret line="141" column="8" selection-start-line="141" selection-start-column="8" selection-end-line="141" selection-end-column="8" />
+          <folding>
+            <element signature="e#0#33#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/common/phx_trader_spi.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="57">
+          <caret line="4" column="6" selection-start-line="4" selection-start-column="6" selection-end-line="4" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/MyClient.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="247">
+          <caret line="126" selection-start-line="126" selection-end-line="126" />
+          <folding>
+            <element signature="e#1373#1634#0" />
+            <element signature="e#1467#1597#0" />
+            <element signature="e#1675#1726#0" />
+            <element signature="e#1766#1813#0" />
+            <element signature="e#1855#1931#0" />
+            <element signature="e#1969#2831#0" />
+            <element signature="e#2944#3302#0" />
+            <element signature="e#3139#3302#0" />
+            <element signature="e#3391#3745#0" />
+            <element signature="e#3420#3745#0" />
+            <element signature="e#3841#4048#0" />
+            <element signature="e#3854#3874#0" />
+            <element signature="e#4174#4335#0" />
+            <element signature="e#4450#5091#0" />
+            <element signature="e#4636#4975#0" />
+            <element signature="e#5009#5091#0" />
+            <element signature="e#5170#5279#0" />
+            <element signature="e#5759#5898#0" />
+            <element signature="e#5962#6170#0" />
+            <element signature="e#6262#6659#0" />
+            <element signature="e#6291#6659#0" />
+            <element signature="e#6753#6954#0" />
+            <element signature="e#7051#7396#0" />
+            <element signature="e#7103#7295#0" />
+            <element signature="e#7329#7396#0" />
+            <element signature="e#7502#7806#0" />
+            <element signature="e#7545#7696#0" />
+            <element signature="e#7730#7797#0" />
+            <element signature="e#7860#8167#0" />
+            <element signature="e#7891#8146#0" />
+            <element signature="e#7980#8033#0" />
+            <element signature="e#8096#8146#0" />
+            <element signature="e#8197#9815#0" />
+            <element signature="e#8909#8966#0" />
+            <element signature="e#9221#9273#0" />
+            <element signature="e#9528#9580#0" />
+            <element signature="e#9858#10389#0" />
+            <element signature="e#10003#10389#0" />
+            <element signature="e#10173#10361#0" />
+            <element signature="e#10431#10521#0" />
+            <element signature="e#10563#10668#0" />
+            <element signature="e#10707#10816#0" />
+            <element signature="e#10876#11620#0" />
+            <element signature="e#11551#11571#0" />
+            <element signature="e#11681#12036#0" />
+            <element signature="e#11933#11953#0" />
+            <element signature="e#12089#12325#0" />
+            <element signature="e#12379#12637#0" />
+            <element signature="e#12675#13005#0" />
+            <element signature="e#12748#12954#0" />
+            <element signature="e#13039#15376#0" />
+            <element signature="e#14058#14190#0" />
+            <element signature="e#14283#15337#0" />
+            <element signature="e#14361#15337#0" />
+            <element signature="e#14449#14506#0" />
+            <element signature="e#14576#14651#0" />
+            <element signature="e#14721#14807#0" />
+            <element signature="e#14877#14929#0" />
+            <element signature="e#14999#15223#0" />
+            <element signature="e#15098#15193#0" />
+            <element signature="e#15293#15337#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Client.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="76">
-          <caret line="52" column="19" selection-start-line="52" selection-start-column="19" selection-end-line="52" selection-end-column="19" />
+        <state relative-caret-position="304">
+          <caret line="93" column="34" lean-forward="true" selection-start-line="93" selection-start-column="34" selection-end-line="93" selection-end-column="34" />
           <folding>
             <element signature="e#162#189#0" expanded="true" />
+            <element signature="e#890#1802#0" />
+            <element signature="e#6349#6361#0" />
           </folding>
         </state>
       </provider>

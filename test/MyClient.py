@@ -41,6 +41,7 @@ class MyClient(CPhxFtdcTraderSpi):
         self.m_pUserApi = CPhxFtdcTraderApi()
         self._is_background_started = False
 
+
     def reset(self):
         """Reset function after each round"""
         for ins, om in self.ins2om.items():
@@ -118,12 +119,12 @@ class MyClient(CPhxFtdcTraderSpi):
         self.game_status = pGameStatus
 
     def OnRtnMarketData(self, pMarketData: CPhxFtdcDepthMarketDataField):
-        if pMarketData.InstrumentID in self.ins2index:
-            # print('OnRtnMarketData, data=%s' % json.dumps(pMarketData.__dict__))
-            index = self.ins2index[pMarketData.InstrumentID]
-            self.md_list[index].append(pMarketData)
-            self.market_data_updated[index] = True
-            self.is_any_updated = True
+        # print('OnRtnMarketData, data=%s' % json.dumps(pMarketData.__dict__))
+        index = self.ins2index[pMarketData.InstrumentID]
+        self.md_list[index].append(pMarketData)
+        self.market_data_updated[index] = True
+        self.is_any_updated = True
+
 
     def OnRtnOrder(self, pOrder: CPhxFtdcOrderField):
         if pOrder.InstrumentID not in self.ins2om:
@@ -163,6 +164,7 @@ class MyClient(CPhxFtdcTraderSpi):
             print("init order query over")
 
     def OnRspQryTrade(self, pTrade: CPhxFtdcTradeField, ErrorID, nRequestID, bIsLast):
+        # print(pTrade)
         if pTrade is not None and ErrorID == 0:
             if pTrade.InstrumentID not in self.ins2om:
                 return
