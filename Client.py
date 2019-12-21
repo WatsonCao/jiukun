@@ -90,6 +90,12 @@ class Client41(MyClient):
         # Lock
         self.send_lock=threading.Lock()
 
+        # spread
+        self.spread_bid_offer=[]
+        self.spread_ask_offer=[]
+        self.last_time=None
+
+
     def myInit(self,multi_thread=True):
         self.get_price_list()
 
@@ -109,7 +115,8 @@ class Client41(MyClient):
                     time.sleep(sleep_intervel)
 
         if multi_thread:
-            for each in [(self.market_maker_strategy, 2,True),(self.visual_position,2),(self.monoto_adj,1)]:
+            for each in [(self.market_maker_strategy,1.3,True),(self.visual_position,2),(self.monoto_adj,2),(self.spread_strategy,1.3)]:
+            # for each in [(self.spread_strategy, 0.4),(self.visual_position,2)]:
             # for each in [(self.visual_position, 2), (self.monoto_adj, 1)]:
             # for each in [(self.put_call_parity, 2)]:
             # for each in [(self.put_call_parity, 2), (self.market_maker_strategy, 3)]:
@@ -119,6 +126,7 @@ class Client41(MyClient):
                 strategy_thread.start()
 
         self.close_all()
+        self.last_time=time.time()
 
         return True
 
@@ -138,6 +146,7 @@ class Client41(MyClient):
         field.OrderLocalID = order.OrderLocalID
         with self.send_lock:
             ret = self.m_pUserApi.ReqQuickOrderInsert(field, self.next_request_id())
+            time.sleep(0.003)
         # Noted by WatsonCao
         print("QuickOrderInsert ", field, ret)
 
@@ -148,6 +157,7 @@ class Client41(MyClient):
         field.OrderLocalID = order.OrderLocalID
         with self.send_lock:
             ret = self.m_pUserApi.ReqOrderAction(field, self.next_request_id())
+            time.sleep(0.003)
         # Noted by WatsonCao
         print("ActionOrder data=%s, ret=%d" % (json.dumps(field.__dict__), ret))
 
@@ -209,6 +219,8 @@ class Client41(MyClient):
             str1 += "DeltaTotal:{:}\t\tDeltaCount:{:}\t\tffDeltaTrade:{:}\n".format(
                 self.curr_all - self.last_all, self.curr_complete - self.last_complete,
                 self.curr_trade - self.last_trade)
+
+            str1+= "Game Time Remained:{:}".format(self.game_status)
 
         self.logger.info(str1)
         pass
@@ -275,7 +287,7 @@ class Client41(MyClient):
             bids, asks = om.get_live_orders()
             for order in bids:
                 self.send_cancel_order(order)
-                time.sleep(0.01)
+                # time.sleep(0.01)
             for order in asks:
                 self.send_cancel_order(order)
                 time.sleep(0.01)
@@ -331,7 +343,7 @@ class Client41(MyClient):
                     self.send_input_order(order)
                 self.market_data_updated[pos] = False
                 long_pos_number-=100
-                time.sleep(0.01)
+                # time.sleep(0.01)
 
             while short_pos_number > 0:
                 if short_pos_number >= 100:
@@ -347,7 +359,7 @@ class Client41(MyClient):
                     self.send_input_order(order)
                 self.market_data_updated[pos] = False
                 short_pos_number-=100
-                time.sleep(0.01)
+                # time.sleep(0.01)
 
             self.market_data_updated[pos] = False
 
@@ -392,7 +404,7 @@ class Client41(MyClient):
                 self.market_sell_close_order.append(order)
                 self.market_data_updated[pos] = False
                 sell_close_pos[pos] -= 100
-                time.sleep(0.01)
+                # time.sleep(0.01)
 
         for pos in range(72):
             om = self.ins2om[self.options_names[pos]]
@@ -412,7 +424,7 @@ class Client41(MyClient):
                 self.market_buy_close_order.append(order)
                 self.market_data_updated[pos] = False
                 buy_close_pos[pos] -= 100
-                time.sleep(0.01)
+                # time.sleep(0.01)
 
 
 
@@ -487,7 +499,6 @@ class Client41(MyClient):
 
             current_op_price =self.get_intrinsic_price(ubi_price,ins)
 
-
             l=[current_op_price]
 
             last_op_price = self.md_list[yi_wu_option_pos][-1].LastPrice
@@ -541,14 +552,225 @@ class Client41(MyClient):
 
             self.is_any_updated = False
 
-    #WJ
+
+    ## Spread_market
+
+    def limit_close(self):
+        print("Self traded")
+        for pos in range(len(self.instruments)-1):
+            ins = self.instruments[pos]
+            om = self.ins2om[ins.InstrumentID]
+
+            long_pos_number = om.get_long_position_closeable()
+            short_pos_number=om.get_short_position_closeable()
+
+            self_trade=min(long_pos_number,short_pos_number)
+
+            if long_pos_number>short_pos_number:
+                long_pos_number-=self_trade
+            else:
+                short_pos_number-=self_trade
+
+            while self_trade>0:
+                if self_trade>=100:
+                    order = om.place_market_order(self.next_order_ref(),
+                                                  PHX_FTDC_D_Sell,
+                                                  PHX_FTDC_OF_Close, 100)
+                    self.send_input_order(order)
+
+                    order = om.place_market_order(self.next_order_ref(),
+                                                  PHX_FTDC_D_Buy,
+                                                  PHX_FTDC_OF_Close, 100)
+                    self.send_input_order(order)
+                    self_trade-=100
+                else:
+                    order = om.place_market_order(self.next_order_ref(),
+                                                  PHX_FTDC_D_Sell,
+                                                  PHX_FTDC_OF_Close, self_trade)
+                    self.send_input_order(order)
+
+                    order = om.place_market_order(self.next_order_ref(),
+                                                  PHX_FTDC_D_Buy,
+                                                  PHX_FTDC_OF_Close, self_trade)
+
+                    self.send_input_order(order)
+                    self_trade =0
+            self.market_data_updated[pos] = False
+
+        self.is_any_updated = False
+
+    def spread_strategy(self):
+        if time.time()-self.last_time>=30:
+            self.last_time = time.time()
+            self.limit_close()
+        index = self.ins2index["UBIQ"]
+        ubi_price = self.md_list[index][-1].LastPrice
+
+        down_price = ubi_price * 0.95
+        up_price = ubi_price * 1.05
+        l_pos = r_pos = -1
+        for pos in range(len(self.options_prices)):
+            if self.options_prices[pos] >= down_price and l_pos == -1:
+                l_pos = pos
+            if self.options_prices[pos] <= up_price:
+                r_pos = pos
+
+        for yi_wu_option_pos in list(range(l_pos, r_pos + 1)) + list(
+                range(l_pos + 36, r_pos + 1 + 36)):
+
+            ins = self.instruments[yi_wu_option_pos]
+            om = self.ins2om[ins.InstrumentID]
+
+            ask1_price = self.md_list[yi_wu_option_pos][-1].AskPrice1-0.001
+            ask1_volume= self.md_list[yi_wu_option_pos][-1].AskVolume1//2
+            if ask1_volume>50:
+                ask1_volume=50
+
+            bid1_price=self.md_list[yi_wu_option_pos][-1].BidPrice1+0.001
+            bid1_volume = self.md_list[yi_wu_option_pos][-1].BidVolume1//2
+            if bid1_volume>50:
+                bid1_volume=50
+
+            if ask1_price-bid1_price>0.0002 and ask1_volume>=1 and bid1_volume>=1:
+                bid_order = om.place_limit_order(self.next_order_ref(),
+                                                 PHX_FTDC_D_Buy, PHX_FTDC_OF_Open,
+                                                 bid1_price, bid1_volume)
+
+                self.send_input_order(bid_order)
+                self.spread_bid_offer.append([time.time(),bid_order])
+
+                ask_order = om.place_limit_order(self.next_order_ref(),
+                                                 PHX_FTDC_D_Sell, PHX_FTDC_OF_Open,
+                                                 ask1_price, ask1_volume)
+                self.send_input_order(ask_order)
+                self.spread_ask_offer.append([time.time(),ask_order])
+
+                self.market_data_updated[yi_wu_option_pos] = False
+
+            self.is_any_updated = False
+
+        # 撤单
+        new_order = []
+        for pos_time, order in self.spread_bid_offer+self.spread_ask_offer:
+            ins = order.InstrumentID
+            stop_time = 3
+            if time.time() - pos_time > stop_time:
+                if order.OrderStatus == PHX_FTDC_OST_PartTradedQueueing or order.OrderStatus == PHX_FTDC_OST_NoTradeQueueing:
+                    self.send_cancel_order(order)
+                    print('order calceled')
+                elif order.OrderStatus == PHX_FTDC_OST_Error or order.OrderStatus == PHX_FTDC_OST_Canceled or order.OrderStatus == PHX_FTDC_OST_AllTraded:
+                    # new_order.append([pos_time,order])
+                    # print('Order waiting...')
+                    print(order.OrderStatus)
+                    continue
+            else:
+                new_order.append([pos_time, order])
+            om = self.ins2om[ins]
+
+            index = self.ins2index[ins]
+            if time.time() - pos_time < stop_time and order.OrderPriceType == PHX_FTDC_OPT_LimitPrice and order.VolumeTraded != 0:
+                cur_price = self.get_bid_ask(index).values[0]
+                benefit = 0.05
+                if order.Direction == "0":
+                    if order.OffsetFlag == "0":  # buy open
+
+                        if order.LimitPrice < cur_price[12] - benefit:
+                            om = self.ins2om[ins]
+                            order_close = om.place_market_order(self.next_order_ref(), PHX_FTDC_D_Sell,
+                                                                PHX_FTDC_OF_Close,
+                                                                min(cur_price[13], order.VolumeTraded))
+                            self.send_input_order(order_close)
+                            new_order.append([time.time(), order_close])
+                            # time.sleep(0.01)
+                    elif order.OffsetFlag == "1":  # buy close
+                        if order.LimitPrice > cur_price[2] + benefit:
+                            om = self.ins2om[ins]
+                            order_close = om.place_market_order(self.next_order_ref(), PHX_FTDC_D_Buy,
+                                                                PHX_FTDC_OF_Close,
+                                                                min(cur_price[3],
+                                                                    order.VolumeTotalOriginal - order.VolumeTraded))
+                            self.send_input_order(order_close)
+                            new_order.append([time.time(), order_close])
+                            # time.sleep(0.01)
+                elif order.Direction == "1":
+                    if order.OffsetFlag == "0":  # sell open
+                        if order.LimitPrice > cur_price[2] + benefit:
+                            om = self.ins2om[ins]
+                            order_close = om.place_market_order(self.next_order_ref(), PHX_FTDC_D_Buy,
+                                                                PHX_FTDC_OF_Close,
+                                                                min(cur_price[3], order.VolumeTraded))
+                            self.send_input_order(order_close)
+                            new_order.append([time.time(), order_close])
+                            # time.sleep(0.01)
+                    elif order.OffsetFlag == "1":  # sell close
+                        if order.LimitPrice < cur_price[12] + benefit:
+                            om = self.ins2om[ins]
+                            order_close = om.place_market_order(self.next_order_ref(), PHX_FTDC_D_Sell,
+                                                                PHX_FTDC_OF_Close,
+                                                                min([13],
+                                                                    order.VolumeTotalOriginal - order.VolumeTraded))
+                            self.send_input_order(order_close)
+                            new_order.append([time.time(), order_close])
+                            # time.sleep(0.01)
+            elif time.time() - pos_time >= stop_time and order.OrderPriceType == PHX_FTDC_OPT_LimitPrice and order.VolumeTraded != 0:
+                if order.Direction == "0":
+                    if order.OffsetFlag == "0":  # buy open
+                        position_should_close = order.VolumeTraded
+                        if position_should_close != 0:
+                            om = self.ins2om[ins]
+                            order_close = om.place_market_order(self.next_order_ref(), PHX_FTDC_D_Sell,
+                                                                PHX_FTDC_OF_Close,
+                                                                position_should_close)
+                            self.send_input_order(order_close)
+                            new_order.append([time.time(), order_close])
+                            # time.sleep(0.01)
+
+                    elif order.OffsetFlag == "1":  # buy close
+                        position_should_close = order.VolumeTotalOriginal - order.VolumeTraded
+                        if position_should_close != 0:
+                            om = self.ins2om[ins]
+                            order_close = om.place_market_order(self.next_order_ref(), PHX_FTDC_D_Buy,
+                                                                PHX_FTDC_OF_Close,
+                                                                position_should_close)
+                            self.send_input_order(order_close)
+                            new_order.append([time.time(), order_close])
+                            # time.sleep(0.01)
+
+                elif order.Direction == "1":
+                    if order.OffsetFlag == "0":  # sell open
+                        position_should_close = order.VolumeTraded
+                        if position_should_close != 0:
+                            om = self.ins2om[ins]
+                            order_close = om.place_market_order(self.next_order_ref(), PHX_FTDC_D_Buy,
+                                                                PHX_FTDC_OF_Close,
+                                                                position_should_close)
+                            self.send_input_order(order_close)
+                            new_order.append([time.time(), order_close])
+                            # time.sleep(0.01)
+
+                    elif order.OffsetFlag == "1":  # buy close
+                        position_should_close = order.VolumeTotalOriginal - order.VolumeTraded
+                        if position_should_close != 0:
+                            om = self.ins2om[ins]
+                            order_close = om.place_market_order(self.next_order_ref(), PHX_FTDC_D_Buy,
+                                                                PHX_FTDC_OF_Close,
+                                                                position_should_close)
+                            self.send_input_order(order_close)
+                            new_order.append([time.time(), order_close])
+                            # time.sleep(0.01)
+
+                self.market_data_updated[self.ins2index[ins]] = False  # reset flag
+        self.is_any_updated = False  # reset flag
+
+
+    # #WJ
     def get_bid_ask(self, Index, shift = 1):
         ins = self.instruments[Index]
         index = self.ins2index[ins.InstrumentID]
         price = self.md_list[index][-shift].__dict__
         df = pd.DataFrame.from_dict(price, orient='index').T
         return df.loc[:,self.ask_bid]
-
+    #
     def monoto_adj(self):
         print("Monoto Ajust")
         K = self.options_prices*2
@@ -707,7 +929,7 @@ class Client41(MyClient):
                                                                 min(cur_price[13], order.VolumeTraded))
                             self.send_input_order(order_close)
                             new_order.append([time.time(), order_close])
-                            time.sleep(0.01)
+                            # time.sleep(0.01)
                     elif order.OffsetFlag == "1":  # buy close
                         if order.LimitPrice > cur_price[2] + benefit:
                             om = self.ins2om[ins]
@@ -716,7 +938,7 @@ class Client41(MyClient):
                                                                 min(cur_price[3],order.VolumeTotalOriginal - order.VolumeTraded))
                             self.send_input_order(order_close)
                             new_order.append([time.time(), order_close])
-                            time.sleep(0.01)
+                            # time.sleep(0.01)
                 elif order.Direction == "1":
                     if order.OffsetFlag == "0":  # sell open
                         if order.LimitPrice > cur_price[2] + benefit:
@@ -726,7 +948,7 @@ class Client41(MyClient):
                                                                 min(cur_price[3],order.VolumeTraded))
                             self.send_input_order(order_close)
                             new_order.append([time.time(), order_close])
-                            time.sleep(0.01)
+                            # time.sleep(0.01)
                     elif order.OffsetFlag == "1":  # sell close
                         if order.LimitPrice < cur_price[12] + benefit:
                             om = self.ins2om[ins]
@@ -735,7 +957,7 @@ class Client41(MyClient):
                                                                 min([13],order.VolumeTotalOriginal - order.VolumeTraded))
                             self.send_input_order(order_close)
                             new_order.append([time.time(), order_close])
-                            time.sleep(0.01)
+                            # time.sleep(0.01)
             elif time.time() - pos_time >= stop_time and order.OrderPriceType == PHX_FTDC_OPT_LimitPrice and order.VolumeTraded != 0:
                 if order.Direction == "0":
                     if order.OffsetFlag == "0":  # buy open
@@ -747,7 +969,7 @@ class Client41(MyClient):
                                                           position_should_close)
                             self.send_input_order(order_close)
                             new_order.append([time.time(),order_close])
-                            time.sleep(0.01)
+                            # time.sleep(0.01)
 
                     elif order.OffsetFlag == "1":  # buy close
                         position_should_close = order.VolumeTotalOriginal - order.VolumeTraded
@@ -757,7 +979,7 @@ class Client41(MyClient):
                                                           position_should_close)
                             self.send_input_order(order_close)
                             new_order.append([time.time(),order_close])
-                            time.sleep(0.01)
+                            # time.sleep(0.01)
 
                 elif order.Direction == "1":
                     if order.OffsetFlag == "0":  # sell open
@@ -768,7 +990,7 @@ class Client41(MyClient):
                                                           position_should_close)
                             self.send_input_order(order_close)
                             new_order.append([time.time(),order_close])
-                            time.sleep(0.01)
+                            # time.sleep(0.01)
 
                     elif order.OffsetFlag == "1":  # buy close
                         position_should_close = order.VolumeTotalOriginal - order.VolumeTraded
@@ -778,11 +1000,15 @@ class Client41(MyClient):
                                                           position_should_close)
                             self.send_input_order(order_close)
                             new_order.append([time.time(),order_close])
-                            time.sleep(0.01)
+                            # time.sleep(0.01)
 
                 self.market_data_updated[self.ins2index[ins]] = False  # reset flag
         self.is_any_updated = False  # reset flag
         self.monoto_order_list = new_order
+
+
+
+
 
 
 
