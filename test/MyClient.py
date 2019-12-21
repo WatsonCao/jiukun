@@ -92,10 +92,10 @@ class MyClient(CPhxFtdcTraderSpi):
             om.on_rsp_order_insert(pInputOrder.OrderLocalID)
 
     def OnRspOrderAction(self, pInputOrderAction: CPhxFtdcOrderActionField, ErrorID):
-        pass
+        # pass
         # Noted by WatsonCao
-        # if ErrorID != 0:
-        #     print('OnRspOrderAction, orderRef=%d, ErrorID=%d, ErrMsg=%s' % (pInputOrderAction.OrderLocalID, ErrorID, get_server_error(ErrorID)))
+        if ErrorID != 0:
+            print('OnRspOrderAction, orderRef=%d, ErrorID=%d, ErrMsg=%s' % (pInputOrderAction.OrderLocalID, ErrorID, get_server_error(ErrorID)))
 
     def OnRspQryTradingAccount(self, pTradingAccount: CPhxFtdcRspClientAccountField, ErrorID, nRequestID, bIsLast):
         print('OnRspQryTradingAccount, data=%s, ErrorID=%d, ErrMsg=%s, bIsLast=%d' % (json.dumps(pTradingAccount.__dict__), ErrorID, get_server_error(ErrorID), bIsLast))
@@ -201,7 +201,7 @@ class MyClient(CPhxFtdcTraderSpi):
         print("OnRspUserLogin, all link ready")
         self.query_status = False
         ret = self.m_pUserApi.ReqQryInstrument(CPhxFtdcQryInstrumentField(), self.next_request_id())
-        if (not ret) or (not self.timeout_wait(10)):
+        if (not ret) or (not self.timeout_wait(50)):
             print("ReqQryInstrument failed")
             return False
 
@@ -209,7 +209,7 @@ class MyClient(CPhxFtdcTraderSpi):
         field = CPhxFtdcQryOrderField()
         field.InvestorID = self.m_UserID
         ret = self.m_pUserApi.ReqQryOrder(field, self.next_request_id())
-        if (not ret) or (not self.timeout_wait(10)):
+        if (not ret) or (not self.timeout_wait(50)):
             print("ReqQryOrder failed")
             return False
 
@@ -217,7 +217,7 @@ class MyClient(CPhxFtdcTraderSpi):
         field = CPhxFtdcQryTradeField()
         field.InvestorID = self.m_UserID
         ret = self.m_pUserApi.ReqQryTrade(field, self.next_request_id())
-        if (not ret) or (not self.timeout_wait(10)):
+        if (not ret) or (not self.timeout_wait(50)):
             print("ReqQryTrade failed")
             return False
 
@@ -275,7 +275,7 @@ class MyClient(CPhxFtdcTraderSpi):
         field.OrderLocalID = order.OrderLocalID
         ret = self.m_pUserApi.ReqQuickOrderInsert(field, self.next_request_id())
         # Noted by WatsonCao
-        # print("QuickOrderInsert ", field, ret)
+        print("QuickOrderInsert ", field, ret)
 
     def send_cancel_order(self, order: OrderInfo):
         field = CPhxFtdcOrderActionField()
@@ -284,7 +284,7 @@ class MyClient(CPhxFtdcTraderSpi):
         field.OrderLocalID = order.OrderLocalID
         ret = self.m_pUserApi.ReqOrderAction(field, self.next_request_id())
         # Noted by WatsonCao
-        # print("ActionOrder data=%s, ret=%d" % (json.dumps(field.__dict__), ret))
+        print("ActionOrder data=%s, ret=%d" % (json.dumps(field.__dict__), ret))
 
     def random_input_order(self, ins_idx):
         ins = self.instruments[ins_idx]
@@ -320,10 +320,11 @@ if __name__ == '__main__':
     parser.add_option("-u", "--user_id", dest="user_id", help="user id")
     parser.add_option("-a", "--password", dest="password", help="password")
     (options, args) = parser.parse_args()
-    server_ip = '127.0.0.1'
-    order_port = 18023
-    user_id = 3
-    password = '123456'
+    server_ip = '106.120.131.90'
+    # server_ip = '192.168.10.10'
+    order_port = 9000
+    user_id = 41
+    password = '8V2pmCbX'
 
     if options.ip:
         server_ip = options.ip
