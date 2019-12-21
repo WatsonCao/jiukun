@@ -87,6 +87,9 @@ class Client41(MyClient):
         self.implied_vol = deque()
         self.greeks = deque()
 
+        # Lock
+        self.send_lock=threading.Lock()
+
     def myInit(self,multi_thread=True):
         self.get_price_list()
 
@@ -106,8 +109,8 @@ class Client41(MyClient):
                     time.sleep(sleep_intervel)
 
         if multi_thread:
-            # for each in [(self.market_maker_strategy, 2,True),(self.visual_position,2),(self.monoto_adj,1)]:
-            for each in [(self.visual_position, 2), (self.monoto_adj, 1)]:
+            for each in [(self.market_maker_strategy, 2,True),(self.visual_position,2),(self.monoto_adj,1)]:
+            # for each in [(self.visual_position, 2), (self.monoto_adj, 1)]:
             # for each in [(self.put_call_parity, 2)]:
             # for each in [(self.put_call_parity, 2), (self.market_maker_strategy, 3)]:
                 strategy_thread = threading.Thread(target=stragey_run,
@@ -118,6 +121,35 @@ class Client41(MyClient):
         self.close_all()
 
         return True
+
+    # 辅助下单
+    def send_input_order(self, order: OrderInfo):
+        field = CPhxFtdcQuickInputOrderField()
+        field.OrderPriceType = order.OrderPriceType
+        field.OffsetFlag = order.OffsetFlag
+        field.HedgeFlag = PHX_FTDC_HF_Speculation
+        field.InstrumentID = order.InstrumentID
+        field.Direction = order.Direction
+        field.VolumeTotalOriginal = order.VolumeTotalOriginal
+        field.TimeCondition = PHX_FTDC_TC_GFD
+        field.VolumeCondition = PHX_FTDC_VC_AV
+        if order.OrderPriceType == PHX_FTDC_OPT_LimitPrice:
+            field.LimitPrice = order.LimitPrice
+        field.OrderLocalID = order.OrderLocalID
+        with self.send_lock:
+            ret = self.m_pUserApi.ReqQuickOrderInsert(field, self.next_request_id())
+        # Noted by WatsonCao
+        print("QuickOrderInsert ", field, ret)
+
+    def send_cancel_order(self, order: OrderInfo):
+        field = CPhxFtdcOrderActionField()
+        field.OrderSysID = order.OrderSysID
+        field.InvestorID = self.m_UserID
+        field.OrderLocalID = order.OrderLocalID
+        with self.send_lock:
+            ret = self.m_pUserApi.ReqOrderAction(field, self.next_request_id())
+        # Noted by WatsonCao
+        print("ActionOrder data=%s, ret=%d" % (json.dumps(field.__dict__), ret))
 
     #以下为辅助可视化输出部分
     def obtain_on_untraded_volume(self,om):
@@ -509,7 +541,6 @@ class Client41(MyClient):
 
             self.is_any_updated = False
 
-
     #WJ
     def get_bid_ask(self, Index, shift = 1):
         ins = self.instruments[Index]
@@ -519,6 +550,7 @@ class Client41(MyClient):
         return df.loc[:,self.ask_bid]
 
     def monoto_adj(self):
+        print("Monoto Ajust")
         K = self.options_prices*2
         index = self.ins2index["UBIQ"]
         price = self.md_list[index][-1]
