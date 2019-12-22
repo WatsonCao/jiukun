@@ -12,7 +12,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="CoverageDataManager">
-    <SUITE FILE_PATH="coverage/jiukun$Client.coverage" NAME="Client Coverage Results" MODIFIED="1576973628617" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/jiukun$Client.coverage" NAME="Client Coverage Results" MODIFIED="1576979902813" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/jiukun$MyClient.coverage" NAME="MyClient Coverage Results" MODIFIED="1576759299136" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
     <SUITE FILE_PATH="coverage/jiukun$Test.coverage" NAME="Test Coverage Results" MODIFIED="1576973200180" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="D:/Tencent/Wechat/WeChat Files/chj5chj5/FileStorage/File/2019-12/生成ID" />
   </component>
@@ -21,28 +21,23 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Client.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="160">
-              <caret line="612" column="35" selection-start-line="612" selection-start-column="35" selection-end-line="612" selection-end-column="35" />
+            <state relative-caret-position="188">
+              <caret line="480" column="37" lean-forward="true" selection-start-line="480" selection-start-column="37" selection-end-line="480" selection-end-column="37" />
               <folding>
                 <element signature="n#!!doc" />
                 <element signature="e#40#161#1" />
+                <element signature="e#162#189#0" expanded="true" />
                 <element signature="e#355#2836#0" />
                 <element signature="e#2051#2470#0" />
-                <element signature="e#2783#4084#0" />
                 <element signature="e#2880#3211#0" />
                 <element signature="e#3034#3211#0" />
-                <element signature="e#3250#3805#0" />
-                <element signature="e#3472#4000#0" />
                 <element signature="e#3472#3541#0" />
-                <element signature="e#4804#4901#0" />
-                <element signature="e#5252#5349#0" />
+                <element signature="e#3923#4698#0" />
                 <element signature="e#5217#5819#0" />
                 <element signature="e#5217#5252#0" />
                 <element signature="e#5681#5800#0" />
-                <element signature="e#5860#8598#0" />
                 <element signature="e#6043#7115#0" />
                 <element signature="e#6084#6791#0" />
-                <element signature="e#7217#8553#0" />
                 <element signature="e#7887#8258#0" />
                 <element signature="e#8724#8929#0" />
                 <element signature="e#9014#11126#0" />
@@ -67,39 +62,15 @@
                 <element signature="e#14266#15027#0" />
                 <element signature="e#14314#14555#0" />
                 <element signature="e#14598#14902#0" />
-                <element signature="e#15201#19471#0" />
-                <element signature="e#15318#15540#0" />
-                <element signature="e#15606#15826#0" />
-                <element signature="e#15930#16864#0" />
-                <element signature="e#16031#16864#0" />
-                <element signature="e#16082#16324#0" />
-                <element signature="e#16367#16675#0" />
-                <element signature="e#16908#17885#0" />
-                <element signature="e#17008#17885#0" />
-                <element signature="e#17058#17349#0" />
-                <element signature="e#17392#17698#0" />
-                <element signature="e#17949#18683#0" />
-                <element signature="e#18137#18480#0" />
+                <element signature="e#15636#20057#0" />
                 <element signature="e#18746#19432#0" />
                 <element signature="e#18934#19229#0" />
                 <element signature="e#19522#19692#0" />
-                <element signature="e#19739#22744#0" />
-                <element signature="e#20048#20215#0" />
-                <element signature="e#20352#22744#0" />
-                <element signature="e#21071#22703#0" />
-                <element signature="e#22992#25049#0" />
-                <element signature="e#23036#26640#0" />
-                <element signature="e#23773#24951#0" />
-                <element signature="e#23813#24354#0" />
-                <element signature="e#24397#24951#0" />
-                <element signature="e#24939#24998#0" />
                 <element signature="e#23113#23304#0" />
                 <element signature="e#24142#24892#0" />
                 <element signature="e#25059#32087#0" />
                 <element signature="e#25177#25714#0" />
-                <element signature="e#25307#25380#0" />
                 <element signature="e#25556#25714#0" />
-                <element signature="e#25913#25949#0" />
                 <element signature="e#26466#29660#0" />
                 <element signature="e#26833#28214#0" />
                 <element signature="e#26902#27498#0" />
@@ -123,7 +94,6 @@
                 <element signature="e#31980#32566#0" />
                 <element signature="e#32142#32566#0" />
                 <element signature="e#32175#32405#0" />
-                <element signature="e#32446#46445#0" />
                 <element signature="e#32766#39042#0" />
                 <element signature="e#33047#33081#0" />
                 <element signature="e#33246#34034#0" />
@@ -167,7 +137,6 @@
                 <element signature="e#45216#45620#0" />
                 <element signature="e#45709#46267#0" />
                 <element signature="e#45863#46267#0" />
-                <element signature="e#48792#72128#0" />
                 <element signature="e#49433#49475#0" />
                 <element signature="e#49758#49928#0" />
                 <element signature="e#49941#49971#0" />
@@ -183,13 +152,9 @@
                 <element signature="e#59704#60663#0" />
                 <element signature="e#59817#60177#0" />
                 <element signature="e#60268#60627#0" />
-                <element signature="e#60767#71995#0" />
-                <element signature="e#60894#61452#0" />
                 <element signature="e#61027#61103#0" />
                 <element signature="e#61285#61452#0" />
                 <element signature="e#61285#61321#0" />
-                <element signature="e#61493#61569#0" />
-                <element signature="e#61894#66946#0" />
                 <element signature="e#62043#64426#0" />
                 <element signature="e#62110#63594#0" />
                 <element signature="e#62110#62124#0" />
@@ -202,7 +167,6 @@
                 <element signature="e#65557#66119#0" />
                 <element signature="e#66214#66946#0" />
                 <element signature="e#66292#66946#0" />
-                <element signature="e#67103#71911#0" />
                 <element signature="e#67153#69484#0" />
                 <element signature="e#67220#68683#0" />
                 <element signature="e#67220#67234#0" />
@@ -232,11 +196,48 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/test/OrderManager.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="18">
+              <caret line="15" column="21" selection-start-line="15" selection-start-column="21" selection-end-line="17" selection-end-column="21" />
+              <folding>
+                <element signature="e#0#33#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/common/phx_structs.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="289">
+              <caret line="629" column="44" selection-start-line="629" selection-start-column="44" selection-end-line="629" selection-end-column="44" />
+              <folding>
+                <element signature="e#0#13#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/common/phx_link.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="138">
+              <caret line="149" selection-start-line="149" selection-end-line="149" />
+              <folding>
+                <element signature="e#0#33#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/test/MyClient.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="84">
-              <caret line="278" selection-start-line="278" selection-end-line="278" />
+            <state relative-caret-position="285">
+              <caret line="95" column="12" selection-start-line="95" selection-start-column="12" selection-end-line="95" selection-end-column="12" />
               <folding>
+                <element signature="e#10825#11567#0" />
                 <element signature="e#11628#11981#0" />
               </folding>
             </state>
@@ -246,8 +247,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/common/phx_trader_api.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3154">
-              <caret line="174" selection-start-line="174" selection-end-line="174" />
+            <state relative-caret-position="130">
+              <caret line="113" selection-start-line="113" selection-end-line="113" />
               <folding>
                 <element signature="e#0#33#0" expanded="true" />
               </folding>
@@ -261,7 +262,6 @@
     <findStrings>
       <find>ActionOrder data</find>
       <find>is_any_updated</find>
-      <find>OnRspOrderAction</find>
       <find>market_data_updated</find>
       <find>ins2om</find>
       <find>price</find>
@@ -280,6 +280,12 @@
       <find>QuickOrderInsert</find>
       <find>print(0)</find>
       <find>QuickOrderInsert</find>
+      <find>print</find>
+      <find>Self</find>
+      <find>OnRspOrderAction</find>
+      <find>place_limit_order</find>
+      <find>limit_close</find>
+      <find>market_bid_offer</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -295,7 +301,7 @@
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="-8" />
     <option name="width" value="976" />
     <option name="height" value="1038" />
@@ -336,6 +342,9 @@
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
   </component>
   <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\GitHub\jiukun\test" />
+    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\GitHub\jiukun\test" />
     </key>
@@ -441,12 +450,12 @@
       <workItem from="1576635790915" duration="21979000" />
       <workItem from="1576750259089" duration="21397000" />
       <workItem from="1576920612640" duration="2812000" />
-      <workItem from="1576926565548" duration="8363000" />
+      <workItem from="1576926565548" duration="13053000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="55997000" />
+    <option name="totallyTimeSpent" value="60687000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1563" height="845" extended-state="6" />
@@ -454,11 +463,11 @@
     <layout>
       <window_info id="Structure" order="0" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="1" side_tool="true" />
-      <window_info content_ui="combo" id="Project" order="2" weight="0.3717421" />
+      <window_info content_ui="combo" id="Project" order="2" weight="0.37142858" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.21625544" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.35703918" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.12481858" />
+      <window_info active="true" anchor="bottom" id="Debug" order="3" visible="true" weight="0.42960814" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
@@ -553,16 +562,6 @@ print(om.longSnapshot.Position, om.shortSnapshot.Position, last_price)</expressi
     </entry>
     <entry file="file://$PROJECT_DIR$/common/phx_definitions.py">
       <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/common/phx_link.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="19">
-          <caret line="56" selection-start-line="56" selection-end-line="56" />
-          <folding>
-            <element signature="e#0#33#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
     </entry>
     <entry file="file://D:/ProgramData/Anaconda3/Lib/threading.py">
       <provider selected="true" editor-type-id="text-editor">
@@ -802,16 +801,6 @@ print(om.longSnapshot.Position, om.shortSnapshot.Position, last_price)</expressi
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test/OrderManager.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="236">
-          <caret line="204" column="26" selection-start-line="204" selection-start-column="8" selection-end-line="204" selection-end-column="26" />
-          <folding>
-            <element signature="e#0#33#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SPLIT">
@@ -819,26 +808,6 @@ print(om.longSnapshot.Position, om.shortSnapshot.Position, last_price)</expressi
             <caret line="3" column="30" selection-start-line="3" selection-start-column="30" selection-end-line="3" selection-end-column="30" />
           </first_editor>
           <second_editor />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/common/phx_structs.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="139">
-          <caret line="564" selection-start-line="564" selection-end-line="564" />
-          <folding>
-            <element signature="e#0#13#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/common/phx_trader_api.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3154">
-          <caret line="174" selection-start-line="174" selection-end-line="174" />
-          <folding>
-            <element signature="e#0#33#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -863,38 +832,74 @@ print(om.longSnapshot.Position, om.shortSnapshot.Position, last_price)</expressi
     </entry>
     <entry file="file://$PROJECT_DIR$/test/MyClient.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="84">
-          <caret line="278" selection-start-line="278" selection-end-line="278" />
+        <state relative-caret-position="285">
+          <caret line="95" column="12" selection-start-line="95" selection-start-column="12" selection-end-line="95" selection-end-column="12" />
           <folding>
+            <element signature="e#10825#11567#0" />
             <element signature="e#11628#11981#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/common/phx_structs.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="289">
+          <caret line="629" column="44" selection-start-line="629" selection-start-column="44" selection-end-line="629" selection-end-column="44" />
+          <folding>
+            <element signature="e#0#13#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/common/phx_link.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="138">
+          <caret line="149" selection-start-line="149" selection-end-line="149" />
+          <folding>
+            <element signature="e#0#33#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/common/phx_trader_api.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="130">
+          <caret line="113" selection-start-line="113" selection-end-line="113" />
+          <folding>
+            <element signature="e#0#33#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/OrderManager.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="18">
+          <caret line="15" column="21" selection-start-line="15" selection-start-column="21" selection-end-line="17" selection-end-column="21" />
+          <folding>
+            <element signature="e#0#33#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Client.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="160">
-          <caret line="612" column="35" selection-start-line="612" selection-start-column="35" selection-end-line="612" selection-end-column="35" />
+        <state relative-caret-position="188">
+          <caret line="480" column="37" lean-forward="true" selection-start-line="480" selection-start-column="37" selection-end-line="480" selection-end-column="37" />
           <folding>
             <element signature="n#!!doc" />
             <element signature="e#40#161#1" />
+            <element signature="e#162#189#0" expanded="true" />
             <element signature="e#355#2836#0" />
             <element signature="e#2051#2470#0" />
-            <element signature="e#2783#4084#0" />
             <element signature="e#2880#3211#0" />
             <element signature="e#3034#3211#0" />
-            <element signature="e#3250#3805#0" />
-            <element signature="e#3472#4000#0" />
             <element signature="e#3472#3541#0" />
-            <element signature="e#4804#4901#0" />
-            <element signature="e#5252#5349#0" />
+            <element signature="e#3923#4698#0" />
             <element signature="e#5217#5819#0" />
             <element signature="e#5217#5252#0" />
             <element signature="e#5681#5800#0" />
-            <element signature="e#5860#8598#0" />
             <element signature="e#6043#7115#0" />
             <element signature="e#6084#6791#0" />
-            <element signature="e#7217#8553#0" />
             <element signature="e#7887#8258#0" />
             <element signature="e#8724#8929#0" />
             <element signature="e#9014#11126#0" />
@@ -919,39 +924,15 @@ print(om.longSnapshot.Position, om.shortSnapshot.Position, last_price)</expressi
             <element signature="e#14266#15027#0" />
             <element signature="e#14314#14555#0" />
             <element signature="e#14598#14902#0" />
-            <element signature="e#15201#19471#0" />
-            <element signature="e#15318#15540#0" />
-            <element signature="e#15606#15826#0" />
-            <element signature="e#15930#16864#0" />
-            <element signature="e#16031#16864#0" />
-            <element signature="e#16082#16324#0" />
-            <element signature="e#16367#16675#0" />
-            <element signature="e#16908#17885#0" />
-            <element signature="e#17008#17885#0" />
-            <element signature="e#17058#17349#0" />
-            <element signature="e#17392#17698#0" />
-            <element signature="e#17949#18683#0" />
-            <element signature="e#18137#18480#0" />
+            <element signature="e#15636#20057#0" />
             <element signature="e#18746#19432#0" />
             <element signature="e#18934#19229#0" />
             <element signature="e#19522#19692#0" />
-            <element signature="e#19739#22744#0" />
-            <element signature="e#20048#20215#0" />
-            <element signature="e#20352#22744#0" />
-            <element signature="e#21071#22703#0" />
-            <element signature="e#22992#25049#0" />
-            <element signature="e#23036#26640#0" />
-            <element signature="e#23773#24951#0" />
-            <element signature="e#23813#24354#0" />
-            <element signature="e#24397#24951#0" />
-            <element signature="e#24939#24998#0" />
             <element signature="e#23113#23304#0" />
             <element signature="e#24142#24892#0" />
             <element signature="e#25059#32087#0" />
             <element signature="e#25177#25714#0" />
-            <element signature="e#25307#25380#0" />
             <element signature="e#25556#25714#0" />
-            <element signature="e#25913#25949#0" />
             <element signature="e#26466#29660#0" />
             <element signature="e#26833#28214#0" />
             <element signature="e#26902#27498#0" />
@@ -975,7 +956,6 @@ print(om.longSnapshot.Position, om.shortSnapshot.Position, last_price)</expressi
             <element signature="e#31980#32566#0" />
             <element signature="e#32142#32566#0" />
             <element signature="e#32175#32405#0" />
-            <element signature="e#32446#46445#0" />
             <element signature="e#32766#39042#0" />
             <element signature="e#33047#33081#0" />
             <element signature="e#33246#34034#0" />
@@ -1019,7 +999,6 @@ print(om.longSnapshot.Position, om.shortSnapshot.Position, last_price)</expressi
             <element signature="e#45216#45620#0" />
             <element signature="e#45709#46267#0" />
             <element signature="e#45863#46267#0" />
-            <element signature="e#48792#72128#0" />
             <element signature="e#49433#49475#0" />
             <element signature="e#49758#49928#0" />
             <element signature="e#49941#49971#0" />
@@ -1035,13 +1014,9 @@ print(om.longSnapshot.Position, om.shortSnapshot.Position, last_price)</expressi
             <element signature="e#59704#60663#0" />
             <element signature="e#59817#60177#0" />
             <element signature="e#60268#60627#0" />
-            <element signature="e#60767#71995#0" />
-            <element signature="e#60894#61452#0" />
             <element signature="e#61027#61103#0" />
             <element signature="e#61285#61452#0" />
             <element signature="e#61285#61321#0" />
-            <element signature="e#61493#61569#0" />
-            <element signature="e#61894#66946#0" />
             <element signature="e#62043#64426#0" />
             <element signature="e#62110#63594#0" />
             <element signature="e#62110#62124#0" />
@@ -1054,7 +1029,6 @@ print(om.longSnapshot.Position, om.shortSnapshot.Position, last_price)</expressi
             <element signature="e#65557#66119#0" />
             <element signature="e#66214#66946#0" />
             <element signature="e#66292#66946#0" />
-            <element signature="e#67103#71911#0" />
             <element signature="e#67153#69484#0" />
             <element signature="e#67220#68683#0" />
             <element signature="e#67220#67234#0" />
