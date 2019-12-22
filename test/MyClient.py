@@ -275,7 +275,7 @@ class MyClient(CPhxFtdcTraderSpi):
         field.OrderLocalID = order.OrderLocalID
         ret = self.m_pUserApi.ReqQuickOrderInsert(field, self.next_request_id())
         # Noted by WatsonCao
-        print("QuickOrderInsert ", field, ret)
+        # print("QuickOrderInsert ", field, ret)
 
     def send_cancel_order(self, order: OrderInfo):
         field = CPhxFtdcOrderActionField()
@@ -284,7 +284,7 @@ class MyClient(CPhxFtdcTraderSpi):
         field.OrderLocalID = order.OrderLocalID
         ret = self.m_pUserApi.ReqOrderAction(field, self.next_request_id())
         # Noted by WatsonCao
-        print("ActionOrder data=%s, ret=%d" % (json.dumps(field.__dict__), ret))
+        # print("ActionOrder data=%s, ret=%d" % (json.dumps(field.__dict__), ret))
 
     def random_input_order(self, ins_idx):
         ins = self.instruments[ins_idx]
